@@ -1,0 +1,19 @@
+{
+  "name": "audio-annotator",
+  "version": "1.0.0",
+  "description": "Audio Annotation tool",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./app",
+    "dev": "nodemon ./app",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "manikandan",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.3"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
+}
