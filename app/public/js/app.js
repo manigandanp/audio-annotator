@@ -3,32 +3,37 @@ $(document).ready(function () {
   let app = $("#app");
   let table = $("#app > table")
 
-  $.get('/api/wav', (files, staus) => {
+  let urlParams = new URLSearchParams(window.top.location.search)
+  let chapterName = urlParams.get('chapter')
+  let bookName = urlParams.get('book')
 
-    let header = files[0].split('-')
+  $.get(`/api/${bookName}/${chapterName}/wavs`, (files, staus) => {
+
     let tableHeader = `
       <tr>
-        <th colspan='3' class="text-center">
-          <h1>${header[0]} ${header[1]}</h1>
+        <th colspan='3' class="text-center" scope="col">
+          <h1>${bookName} ${chapterName}</h1>
         <th>
       <tr>
     `
 
     let rowsHtml = files.map(function (file) {
       return `<tr>
-        <td class="align-middle">
+        <td class="align-middle col-md-3">
+          <p> ${file} </p>
           <audio controls> 
-            <source src="/wav/${file}" type="audio/wav">
+            <source src="/api/${bookName}/${chapterName}/wavs/${file}" type="audio/wav">
           </audio>
         </td>
-        <td class="align-middle">${file}</td>
-        <td class="align-middle textbox">
+        <td class="align-middle textbox col-md-7">
           <input class="form-control"  type="text" id="${file}" name="${file}" size="30" >
         </td>
-        <td class="align-middle">
-          <i class="fa fa-pencil edit" style="font-size:20px;color:blue;"></i>
-          <i class="fa fa-cut delete" style="font-size:20px;color:red;"></i>
-          <i class="fa fa-check save" style="font-size:20px;color:green;"></i>
+        <td class="align-middle col-md-2">
+          <div class="d-flex justify-content-around">
+            <i class="fa fa-pencil edit" style="font-size:20px;color:blue;"></i>
+            <i class="fa fa-cut delete" style="font-size:20px;color:red;"></i>
+            <i class="fa fa-check save" style="font-size:20px;color:green;"></i>
+          </div>
         </td>
       </tr>`
     }).join("")
