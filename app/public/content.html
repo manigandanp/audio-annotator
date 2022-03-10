@@ -5,12 +5,21 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title></title>
+  <script src="/js/jquery.min-3.5.1.js"></script>
+  <title>Content</title>
 </head>
 
 <body>
   <h1>Content</h1>
   <textarea name="content" id="content" cols="50" rows="100"></textarea>
 </body>
+
+<script>
+  $(document).ready(function () {
+    $("textarea").change(function (event) {
+      $(this).val($(this).val().trim())
+    })
+  })
+</script>
 
 </html>
