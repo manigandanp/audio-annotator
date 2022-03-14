@@ -1,6 +1,6 @@
 const express = require('express');
 const path = require('path')
-const {api} = require('./api')
+const { api } = require('./api')
 
 const PORT = process.env.PORT || 3000;
 
@@ -24,6 +24,18 @@ app.get('/', (req, res) => {
   }
 
   res.sendFile('index.html', options)
+})
+
+app.get('/annotation', (req, res) => {
+  let options = {
+    root: path.join(__dirname, 'public'),
+    dotfiles: 'deny',
+    headers: {
+      'x-timestamp': Date.now(),
+      'x-sent': true
+    }
+  }
+  res.sendFile('annotation.html', options)
 })
 
 app.listen(PORT, () => console.log(`App started at ${PORT}`))
