@@ -1,0 +1,20 @@
+version: "3.9"
+services:
+  annotator:
+    build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./:/audio-annotator/
+      - /Users:/Users
+
+  redis:
+    image: "redis:alpine"
+
+  segmenter:
+    build: ./segmenter
+    ports:
+      - "8000:8000"
+    volumes:
+      - /Users:/Users
+      - ./:/audio-annotator/
