@@ -7,3 +7,4 @@ bin/
 train_list.txt
 val_list.txt
 list.txt
+__pycache__
