@@ -1,3 +1,9 @@
 .devcontainer/
 node_modules/
 package-lock.json
+.vscode
+data/*.db
+bin/
+train_list.txt
+val_list.txt
+list.txt
