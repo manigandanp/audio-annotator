@@ -2,7 +2,7 @@ $(document).ready(function () {
 
   let baseUrl = "http://localhost:8000"
   let table = $("#app > table")
-  $.get(`${baseUrl}/annotations/title`, (files, staus) => {
+  $.get(`${baseUrl}/annotations/titles`, (files, staus) => {
     console.log(files);
     let tableHeader = `
       <tr>

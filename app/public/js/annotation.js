@@ -4,8 +4,9 @@ $(document).ready(function () {
   let table = $("#app table")
   let urlParams = new URLSearchParams(window.top.location.search)
   let title = urlParams.get('title')
+  $('#title').text(title)
 
-  $.get(`${baseUrl}/annotations/title/${title}`, (files, staus) => {
+  $.get(`${baseUrl}/annotations/titles/${title}`, (files, staus) => {
     // setting this for future use
     let sortedFiles = files.sort(sortByEndSample)
     window.annotations = sortedFiles
@@ -27,7 +28,6 @@ $(document).ready(function () {
       let checkedInputElms = $("input[type=checkbox]:checked")
       let filesToMerge = checkedInputElms.map(function (i, el) {
         let filename = $(el).attr('id')
-        $(el).prop('checked', false)
         return annotations.filter((obj) => obj.filename == filename)
       }).get()
       let postData = getPostDataForMergeSignals(filesToMerge)
@@ -37,39 +37,17 @@ $(document).ready(function () {
       ajaxRequest(METHOD, endPoint, postData, function (data, status) {
         console.log("Successfull signal has been merged", status, data.filename);
         let rows = data.map((file) => generateTableRow(file)).join("")
-        checkedInputElms.last().parent().parent().parent().append($(rows))
-        alert("Successfully merged")
+        checkedInputElms.last().parent().parent().parent().after($(rows))
+        checkedInputElms.map(function (i, el) {
+          $(el).prop('checked', false)
+          $(el).parent().parent().parent().find('input.textdesc').prop('disabled', true)
+        })
+        // alert("Successfully merged")
       }, function (xhr, status, err) {
         console.log(`Error while merging signals ${status} - ${err}`);
         alert("Error while merging")
       })
     });
-
-    // send annotations one by one 
-    // $("#save").click(function (event) {
-    //   let allInputObjs = $('input.textdesc:not(:disabled)').map(function (i, el) {
-    //     let input = $(el)
-    //     let textDesc = input.val().trim()
-    //     let filename = input.attr('id')
-    //     let obj = window.annotations.filter((obj) => obj.filename == filename)[0]
-    //     return Object.assign({}, obj, { text_desc: textDesc })
-    //   }).get()
-
-    //   let updatedObj = allInputObjs.filter((obj) => obj.text_desc.trim())
-    //   let endPoint = `${baseUrl}/annotations`
-    //   let METHOD = 'PUT'
-    //   console.log("Updating annotaions....");
-    //   console.log(updatedObj);
-    //   ajaxRequest(METHOD, endPoint, updatedObj, function (data, status) {
-    //     console.log("Successfull signal has been merged", status, data);
-    //     // let rows = data.map((file) => generateTableRow(file)).join("")
-    //     // checkedInputElms.last().parent().parent().parent().append($(rows))
-    //     alert("Successfully saved annotaions")
-    //   }, function (xhr, status, err) {
-    //     console.log(`Error while updating annotations ${status} - ${err}`);
-    //     alert("Error while saving..")
-    //   })
-    // })
 
     $('.edit').click(function (event) {
       $(event.target).parent().parent().find('span').remove()
@@ -199,6 +177,7 @@ function ajaxRequest(method, endPoint, data, successcb, errorcb) {
     'method': method,
     'dataType': 'json',
     processData: false,
+    crossDomain: true,
     'contentType': 'application/json',
     'data': JSON.stringify(data),
     'success': successcb,
