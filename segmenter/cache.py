@@ -1,37 +1,32 @@
 #!/usr/bin/env python3
 
 import struct
-import redis
+from redis import Redis
 import numpy as np
+import msgpack
+import msgpack_numpy as m
+m.patch() 
 
-def toRedis(r,a,n):
-   """Store given Numpy array 'a' in Redis under key 'n'"""
-   h, w = a.shape
-   shape = struct.pack('>II',h,w)
-   encoded = shape + a.tobytes()
+class Cache():
+   def __init__(self):
+      # self.db = Redis(host='redis', port=6379, db=0)
+      self.db = Redis(host='host.docker.internal', port=6379, db=0)
 
-   # Store encoded data in Redis
-   r.set(n,encoded)
-   return
+   def saveAudioNumpy(self, key, data):
+      print(f"Saving Audio - {key} file to cache")
+      packed = m.packb(data)
+      self.db.set(key, packed)
+   
+   def getAudioNumpy(self, key):
+      print(f"Retriving Audio - {key} from cache")
+      cached = self.db.get(key)
+      if(cached is None): return None   
+      unpacked = m.unpackb(cached)
+      return unpacked
 
-def fromRedis(r,n):
-   """Retrieve Numpy array from Redis key 'n'"""
-   encoded = r.get(n)
-   h, w = struct.unpack('>II',encoded[:8])
-   # Add slicing here, or else the array would differ from the original
-   a = np.frombuffer(encoded[8:]).reshape(h,w)
-   return a
+   def save(self, key, data):
+      self.db.set(key, data)
 
-# Create 80x80 numpy array to store
-a0 = np.arange(6400,dtype=np.uint16).reshape(80,80) 
+   def get(self, key):
+       self.db.get(key)
 
-# Redis connection
-r = redis.Redis(host='localhost', port=6379, db=0)
-
-# Store array a0 in Redis under name 'a0array'
-toRedis(r,a0,'a0array')
-
-# Retrieve from Redis
-a1 = fromRedis(r,'a0array')
-
-np.testing.assert_array_equal(a0,a1)
