@@ -29,7 +29,7 @@ class AnnotationController():
     def get_all(self):
         return self.db_session.query(Annotation).all()
 
-    def get_all_title(self):
+    def get_all_titles(self):
         return self.db_session.query(Annotation.title).distinct().all()
 
     # def get_by_filename(self, filename):
