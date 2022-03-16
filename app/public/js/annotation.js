@@ -35,7 +35,8 @@ $(document).ready(function () {
       let METHOD = 'POST'
       console.log("Merging signal....");
       ajaxRequest(METHOD, endPoint, postData, function (data, status) {
-        console.log("Successfull signal has been merged", status, data.filename);
+        console.log("Successfull signal has been merged", status);
+        window.annotations = [...window.annotations, ...data].sort(sortByEndSample)
         let rows = data.map((file) => generateTableRow(file)).join("")
         checkedInputElms.last().parent().parent().parent().after($(rows))
         checkedInputElms.map(function (i, el) {
@@ -49,12 +50,14 @@ $(document).ready(function () {
       })
     });
 
-    $('.edit').click(function (event) {
+    // $('.edit').click(function (event) {
+    $('body').on('click', '.edit', function (event) {
       $(event.target).parent().parent().find('span').remove()
       $(event.target).parent().parent().parent().find('input.textdesc').first().prop('disabled', false)
     })
 
-    $('.save').click(function (event) {
+    // $('.save').click(function (event) {
+    $('body').on('click', '.save', function (event) {
       let el = $(event.target).parent().parent().parent().find('input.textdesc').first()
       let textDesc = el.val().trim()
       if (textDesc) {
@@ -79,7 +82,8 @@ $(document).ready(function () {
     })
 
 
-    $("input.textdesc").change(function (event) {
+    // $("input.textdesc").change(function (event) {
+    $("body").on('change', "input.textdesc", function (event) {
       let textDesc = $(this).val().trim()
       let filename = $(this).attr('id')
       let targetElm = $(event.target).parent().parent().find('.saveicons')
