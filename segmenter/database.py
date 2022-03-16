@@ -6,7 +6,7 @@ import os
 # https://github.com/jod35/Introduction-to-SQLAlchemy/blob/main/main.py
 
 BASE_DIR = os.path.dirname(os.path.realpath(__file__))
-connection_string = "sqlite:///"+os.path.realpath('../data/test.db')
+connection_string = "sqlite:///"+os.path.realpath('../data/annotations.db')
 
 Base = declarative_base()
 engine = create_engine(connection_string, echo=True)

@@ -9,8 +9,8 @@ m.patch()
 
 class Cache():
    def __init__(self):
-      # self.db = Redis(host='redis', port=6379, db=0)
-      self.db = Redis(host='host.docker.internal', port=6379, db=0)
+      self.db = Redis(host='redis', port=6379, db=0)
+      # self.db = Redis(host='host.docker.internal', port=6379, db=0)
 
    def saveAudioNumpy(self, key, data):
       print(f"Saving Audio - {key} file to cache")
