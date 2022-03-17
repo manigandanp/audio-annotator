@@ -59,7 +59,7 @@ $(document).ready(function () {
     // $('.save').click(function (event) {
     $('body').on('click', '.save', function (event) {
       let el = $(event.target).parent().parent().parent().find('input.textdesc').first()
-      let textDesc = el.val().trim()
+      let textDesc = cleanStr(el.val())
       if (textDesc) {
         let filename = el.attr('id')
         let obj = window.annotations.filter((obj) => obj.filename == filename)[0]
@@ -84,7 +84,7 @@ $(document).ready(function () {
 
     // $("input.textdesc").change(function (event) {
     $("body").on('change', "input.textdesc", function (event) {
-      let textDesc = $(this).val().trim()
+      let textDesc = cleanStr($(this).val())
       let filename = $(this).attr('id')
       let targetElm = $(event.target).parent().parent().find('.saveicons')
       if (textDesc) {
@@ -106,7 +106,7 @@ $(document).ready(function () {
     })
 
     $("textarea").change(function (event) {
-      $(this).val($(this).val().trim())
+      $(this).val($(this).val().trim().replace(/“|”|<\/\s?div>|…/g, '').replace(/–/g, '-').replace(/‘|’/g, "'"))
     })
 
   })
@@ -134,6 +134,12 @@ function generateTableRow(file) {
             <source src="/api/wavs?wav=${absolute_filepath}" type="audio/wav">
           </audio>
         </td>
+        <td class="align-middle col-md-2">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="${absolute_filepath}" name="${filename}" value="${filename}">
+            <label class="form-check-label" for="${filename}" > ${filename} </label>
+          </div>
+        </td>
         <td class="align-middle textbox col-md-6">
           ${textDescTD}
         </td>
@@ -143,15 +149,13 @@ function generateTableRow(file) {
             <i class="fa fa-check save" style="font-size:20px;color:green;"></i>
           </div>
         </td>
-        <td class="align-middle col-md-2">
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" id="${absolute_filepath}" name="${filename}" value="${filename}">
-            <label class="form-check-label" for="${filename}" > ${filename} </label>
-          </div>
-        </td>
       </tr>`
 }
 
+
+function cleanStr(str) {
+  return str.trim().replace(/\s\s+/g, ' ')
+}
 
 function getPostDataForMergeSignals(filesToMerge) {
   let firstObj = filesToMerge[0],
