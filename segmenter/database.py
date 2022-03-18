@@ -6,7 +6,11 @@ import os
 # https://github.com/jod35/Introduction-to-SQLAlchemy/blob/main/main.py
 
 BASE_DIR = os.path.dirname(os.path.realpath(__file__))
-connection_string = "sqlite:///"+os.path.realpath('../data/annotations.db')
+# To avoid following error add check_same_thread=False parmas
+# """SQLite objects created in a thread can only be used in that same thread.
+# The object was created in thread id 140570365183744 and this is thread id 140570547025664"""
+connection_string = "sqlite:///" + \
+    os.path.realpath('../data/annotations.db')+"?check_same_thread=False"
 
 Base = declarative_base()
 engine = create_engine(connection_string, echo=True)
