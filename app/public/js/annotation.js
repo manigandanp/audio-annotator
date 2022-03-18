@@ -106,7 +106,7 @@ $(document).ready(function () {
     })
 
     $("textarea").change(function (event) {
-      $(this).val($(this).val().trim().replace(/“|”|<\/\s?div>|…/g, '').replace(/–/g, '-').replace(/‘|’/g, "'"))
+      $(this).val($(this).val().trim().replace(/“|”|<\/\s?div>|…|\!\&#8221/g, '').replace(/–/g, '-').replace(/‘|’/g, "'"))
     })
 
   })
