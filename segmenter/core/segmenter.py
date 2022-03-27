@@ -20,7 +20,6 @@ class Segmenter():
         return cached, int(self.cache.get('srate') or 22050)
 
   def samples_to_segments(self, original_signal, segments_with_start_end_samples):
-    print(segments_with_start_end_samples)
     return [original_signal[samples[0]:samples[-1]] for samples in segments_with_start_end_samples]
 
   def trim_signal(self, signal, trim_threshold_in_db = 20):
