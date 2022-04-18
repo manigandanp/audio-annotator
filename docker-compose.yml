@@ -1,12 +1,12 @@
 version: "3.9"
 services:
   annotator:
-    build: .
+    build: ./server
     ports:
       - "3000:3000"
     volumes:
-      - ./:/audio-annotator/
-      - /Users:/Users
+      - .:/audio-annotator/
+      - sample:/data/
 
   redis:
     image: "redis:alpine"
@@ -16,5 +16,13 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - /Users:/Users
-      - ./:/audio-annotator/
+      - .:/audio-annotator/
+      - sample:/data/
+
+  client:
+    build: ./client
+    port:
+      - "1234:1234"
+    volumes:
+      - .:/audio-annotator/
+      - sample:/data/

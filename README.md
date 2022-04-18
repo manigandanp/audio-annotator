@@ -25,3 +25,9 @@ write_wav -> samplerate=22050, subtype='PCM_16'
 split_signal -> silence_threshold - top_db = 96
 trim_signal - top_db = 20
 write_wav -> samplerate=22050, subtype='PCM_16'
+
+## PonniyinSlevan-1.10
+split_signal -> silence_threshold - top_db = 75
+trim_signal - top_db = 20
+write_wav -> samplerate=22050, subtype='PCM_16'
+
