@@ -6,11 +6,11 @@ RUN pip install librosa soundfile numpy fastapi uvicorn[standard] sqlalchemy
 RUN pip install redis msgpack-numpy
 
 
-WORKDIR ./server/
+WORKDIR /audio-annotator/server/
 RUN npm i -g @nestjs/cli
 RUN npm install 
 
-WORKDIR ./client/
+WORKDIR /audio-annotator/client/
 RUN npm install 
 
 

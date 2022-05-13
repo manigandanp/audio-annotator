@@ -7,12 +7,13 @@ samples_segmenter = SamplesSegmenter()
 wavs_writer = WavWriter()
 utils = Utils()
 
+DATA_FOLDER = '../data'
+
 
 def get_title_and_path(project, source_file_path):
     project_folder = project.replace(' ', '_')
     title = utils.filename_from_path(source_file_path)
-    base_path = '/audio-annotator/dataset/data/{}/{}'.format(
-        project_folder, title)
+    base_path = '{}/{}/{}'.format(DATA_FOLDER,project_folder, title)
     wavs_path = utils.create_path(f'{base_path}/wavs')
     return title, wavs_path
 

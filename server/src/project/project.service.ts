@@ -11,7 +11,9 @@ export class ProjectService {
   }
 
   findAll() {
-    return this.db.project.findMany();
+    return this.db.project.findMany({
+      include: { _count: { select: { titles: true } } },
+    });
   }
 
   findOne(id: Prisma.ProjectWhereUniqueInput) {

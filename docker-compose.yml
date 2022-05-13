@@ -6,7 +6,6 @@ services:
       - "3000:3000"
     volumes:
       - .:/audio-annotator/
-      - sample:/data/
 
   redis:
     image: "redis:alpine"
@@ -17,12 +16,12 @@ services:
       - "8000:8000"
     volumes:
       - .:/audio-annotator/
-      - sample:/data/
+    depends_on:
+      - redis
 
   client:
     build: ./client
-    port:
+    ports:
       - "1234:1234"
     volumes:
       - .:/audio-annotator/
-      - sample:/data/

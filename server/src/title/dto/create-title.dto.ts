@@ -1,7 +1,5 @@
 export class CreateTitleDto {
-  source?: string;
-  fileSize?: number;
-  project?: string;
-  trimThreshold?: number;
-  silenceThreshold?: number;
+  source: string;
+  projectNameWithId: string;
+  fileSize: number
 }

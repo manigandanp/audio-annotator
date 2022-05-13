@@ -2,7 +2,7 @@ import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/c
 import { TitleService } from './title.service';
 import { TitleController } from './title.controller';
 import { DatabaseService } from '../database/database.service';
-import { UploaderMiddleware } from 'src/middleware/uploader.middleware';
+import { AppLoggerMiddleware } from 'src/middleware/request.logger';
 
 @Module({
   controllers: [TitleController],
@@ -11,7 +11,6 @@ import { UploaderMiddleware } from 'src/middleware/uploader.middleware';
 export class TitleModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
-      .apply(UploaderMiddleware)
-      .forRoutes({ path: 'titles', method: RequestMethod.POST });
+      .apply(AppLoggerMiddleware).forRoutes('*')
   }
 }
