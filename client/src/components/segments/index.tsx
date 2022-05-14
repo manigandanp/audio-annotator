@@ -1,2 +1,3 @@
-export { SegmentPlayActions } from "./SegmentPlayActions";
-export {CurrentRegion} from './CurrentRegion'
+export { SegmentPlayActions } from "./SegmentActions";
+export { SegmentUpdateActions } from "./SegmentActions";
+export { CurrentRegion } from "./CurrentRegion";

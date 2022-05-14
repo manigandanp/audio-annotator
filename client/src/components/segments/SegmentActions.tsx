@@ -4,15 +4,9 @@ type ClickAction = () => void;
 interface Action {
   onClickHandler: ClickAction;
 }
-
 interface RegionAction extends Action {
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }
-
-interface PrevProps extends Action {}
-interface NextProps extends Action {}
-interface PlayProps extends Action {}
-interface PauseProps extends Action {}
 
 const Button = ({ children, onClickHandler }: RegionAction) => (
   <button className="btn btn-secondary mx-2" onClick={onClickHandler}>
@@ -20,20 +14,32 @@ const Button = ({ children, onClickHandler }: RegionAction) => (
   </button>
 );
 
-const PreviousRegion = ({ onClickHandler }: PrevProps) => {
+const PreviousRegion = ({ onClickHandler }: RegionAction) => {
   return <Button onClickHandler={onClickHandler}>Prev</Button>;
 };
 
-const NextRegion = ({ onClickHandler }: NextProps) => {
+const NextRegion = ({ onClickHandler }: RegionAction) => {
   return <Button onClickHandler={onClickHandler}>Next</Button>;
 };
 
-const PlayRegion = ({ onClickHandler }: PlayProps) => {
+const PlayRegion = ({ onClickHandler }: RegionAction) => {
   return <Button onClickHandler={onClickHandler}>Play</Button>;
 };
 
-const PauseRegion = ({ onClickHandler }: PauseProps) => {
+const PauseRegion = ({ onClickHandler }: RegionAction) => {
   return <Button onClickHandler={onClickHandler}>Pause</Button>;
+};
+
+const AddRegion = ({ onClickHandler }: RegionAction) => {
+  return <Button onClickHandler={onClickHandler}>Add</Button>;
+};
+
+const DeleteRegion = ({ onClickHandler }: RegionAction) => {
+  return <Button onClickHandler={onClickHandler}>Delete</Button>;
+};
+
+const ResizeRegion = ({ onClickHandler }: RegionAction) => {
+  return <Button onClickHandler={onClickHandler}>Resize</Button>;
 };
 
 interface SegmentPlayActionsProps {
@@ -55,6 +61,26 @@ export const SegmentPlayActions = ({
       <PlayRegion onClickHandler={playRegion} />
       <PauseRegion onClickHandler={pauseRegion} />
       <NextRegion onClickHandler={nextRegion} />
+    </div>
+  );
+};
+
+interface SegmentUpdateActionsProps {
+  addRegion: ClickAction;
+  deleteRegion: ClickAction;
+  resizeRegion: ClickAction;
+}
+
+export const SegmentUpdateActions = ({
+  addRegion,
+  deleteRegion,
+  resizeRegion,
+}: SegmentUpdateActionsProps) => {
+  return (
+    <div className="m-auto mb-3 text-center">
+      <AddRegion onClickHandler={addRegion} />
+      <DeleteRegion onClickHandler={deleteRegion} />
+      <ResizeRegion onClickHandler={resizeRegion} />
     </div>
   );
 };

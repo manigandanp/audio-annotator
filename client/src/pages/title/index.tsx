@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { CurrentRegion, Header, SpinnerIcon } from "../../components";
-import { SegmentPlayActions } from "../../components/segments";
+import {
+  SegmentPlayActions,
+  SegmentUpdateActions,
+} from "../../components/segments";
 import {
   titlesUrl,
   audioUrl,
@@ -299,12 +302,21 @@ export const TitlePage = () => {
           <div id="timeline"></div>
         </div>
         <div className="row mt-3">
-          <SegmentPlayActions
-            prevRegion={prevRegionHandler}
-            playRegion={() => playCurrentRegion(currentRegion?.getValue())}
-            pauseRegion={() => wavesurfer?.pause()}
-            nextRegion={nextRegionHandler}
-          />
+          <div className="col">
+            <SegmentUpdateActions
+              addRegion={addNewRegionHandler}
+              deleteRegion={deleteHandler}
+              resizeRegion={regionResizeHandler}
+            />
+          </div>
+          <div className="col">
+            <SegmentPlayActions
+              prevRegion={prevRegionHandler}
+              playRegion={() => playCurrentRegion(currentRegion?.getValue())}
+              pauseRegion={() => wavesurfer?.pause()}
+              nextRegion={nextRegionHandler}
+            />
+          </div>
         </div>
 
         {currentRegion ? (
@@ -313,9 +325,6 @@ export const TitlePage = () => {
               <CurrentRegion
                 currentRegion={currentRegion}
                 resizedData={resizedData}
-                addNewRegionHandler={addNewRegionHandler}
-                deleteHandler={deleteHandler}
-                regionResizeHandler={regionResizeHandler}
                 annotation={annotation}
                 updateAnnotationHandler={updateAnnotationHandler}
                 saveAnnotationHandler={saveAnnotationHandler}
