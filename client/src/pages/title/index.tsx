@@ -32,6 +32,7 @@ export const TitlePage = () => {
   const [regions, setRegions] = useState<DoublyLinkedList<Region>>();
   const [resizedData, setResizedData] = useState<ResizedSegment>();
   const [annotation, setAnnotation] = useState<string>();
+  const [refTranscription, setRefTranscription] = useState<string>();
 
   useEffect(() => {
     get(`${titlesUrl}/${titleId}`).then(
@@ -51,10 +52,13 @@ export const TitlePage = () => {
           );
 
           let regionsList = DoublyLinkedList.fromArray(sortedRegions);
-
+          let firstRegion = regionsList.head();
           setRegions(regionsList);
-          currentRegionHandler(regionsList.head());
+          currentRegionHandler(firstRegion);
           setWavesurfer(wavesurfer);
+          setRefTranscription(
+            firstRegion.getValue().data.refTranscription as string
+          );
           wavesurfer.on("region-click", (r, e) =>
             regionClickHandler(r, e, regionsList, wavesurfer)
           );
@@ -279,6 +283,11 @@ export const TitlePage = () => {
     }
   };
 
+  const refTranscriptionHandler = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    let val = e.target?.value.trim();
+    setRefTranscription(val);
+  };
+
   return (
     <>
       <Header isButtonEnabled={false} />
@@ -333,9 +342,9 @@ export const TitlePage = () => {
             <div className="col" style={{ height: "625px" }}>
               <textarea
                 style={{ width: "100%", height: "100%" }}
-                disabled
-                className="text-left justify-left "
-                value={currentRegion.getValue().data.refTranscription as string}
+                className="text-left justify-center"
+                value={refTranscription}
+                onChange={refTranscriptionHandler}
               />
             </div>
           </div>
