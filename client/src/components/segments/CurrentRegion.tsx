@@ -12,32 +12,6 @@ type Props = {
   saveAnnotationHandler: (r: DoublyLinkedListNode<Region>) => void;
 };
 
-const getAnnotationSuggestion = (
-  currentRegion: DoublyLinkedListNode<Region>
-) => {
-  let currentRegionValue = currentRegion.getValue();
-  let prevRegionValue = currentRegion.getPrev()?.getValue();
-  let sampleRate = currentRegionValue.data.sampleRate as number;
-  let refTranscription = currentRegionValue.data.refTranscription as string;
-
-  let wordsLen =
-    getWordsLen(currentRegionValue.data.endSample as number, sampleRate, 1.2) +
-    2;
-
-  let prevWordsLen =
-    getWordsLen(
-      (prevRegionValue?.data?.endSample as number) || 0,
-      sampleRate,
-      1.2
-    ) ;
-
-    prevWordsLen = prevWordsLen ? prevWordsLen - 2 : prevWordsLen
-
-  return refTranscription?.split(" ").slice(prevWordsLen, wordsLen).join(" ");
-};
-
-const getWordsLen = (endSample: number, sampleRate: number, avgWords: number) =>
-  Math.ceil((endSample / sampleRate) * 1.2);
 
 export const CurrentRegion = ({
   currentRegion,
@@ -83,15 +57,12 @@ export const CurrentRegion = ({
         </tbody>
       </table>
 
-      <div className="row m-2">
+      <div className="row m-auto">
         <Annotation
           annotation={annotation || ""}
           onChange={updateAnnotationHandler}
           onBlur={() => saveAnnotationHandler(currentRegion)}
         />
-      </div>
-      <div className="row">
-        <p>{getAnnotationSuggestion(currentRegion)}</p>
       </div>
     </div>
   );
