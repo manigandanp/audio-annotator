@@ -30,7 +30,7 @@ model Title {
   sourceFileSize   Int?
   sampleRate       Int?
   sourceDuration   Float?
-  project          Project   @relation(fields: [projectId], references: [id])
+  project          Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
   projectId        String
   segments         Segment[]
 
@@ -59,7 +59,7 @@ model Annotation {
   updatedAt  DateTime @updatedAt
   annotation String
   segmentId  String   @unique
-  segment    Segment  @relation(fields: [segmentId], references: [id])
+  segment    Segment  @relation(fields: [segmentId], references: [id], onDelete: Cascade)
 
   @@map("annotations")
 }
