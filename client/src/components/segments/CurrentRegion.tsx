@@ -4,13 +4,9 @@ import { Region } from "wavesurfer.js/src/plugin/regions";
 import { ResizedSegment } from "../../models";
 import { Annotation } from "./Annotation";
 
-type VoidFunction = () => void;
 type Props = {
   currentRegion: DoublyLinkedListNode<Region>;
   resizedData?: ResizedSegment;
-  addNewRegionHandler: VoidFunction;
-  deleteHandler: VoidFunction;
-  regionResizeHandler: VoidFunction;
   annotation: string | undefined;
   updateAnnotationHandler: (e: React.ChangeEvent<HTMLInputElement>) => void;
   saveAnnotationHandler: (r: DoublyLinkedListNode<Region>) => void;
@@ -46,9 +42,6 @@ const getWordsLen = (endSample: number, sampleRate: number, avgWords: number) =>
 export const CurrentRegion = ({
   currentRegion,
   resizedData,
-  addNewRegionHandler,
-  deleteHandler,
-  regionResizeHandler,
   annotation,
   updateAnnotationHandler,
   saveAnnotationHandler,
@@ -89,29 +82,6 @@ export const CurrentRegion = ({
           ) : null}
         </tbody>
       </table>
-
-      <div className="row my-2">
-        <div className="m-auto mb-3 text-center">
-          <button
-            className="btn btn-secondary mx-2 add"
-            onClick={addNewRegionHandler}
-          >
-            Add
-          </button>
-          <button
-            className="btn btn-secondary mx-2 delete"
-            onClick={deleteHandler}
-          >
-            Delete
-          </button>
-          <button
-            className="btn btn-secondary mx-2 resize"
-            onClick={regionResizeHandler}
-          >
-            Resize
-          </button>
-        </div>
-      </div>
 
       <div className="row m-2">
         <Annotation
