@@ -12,7 +12,6 @@ type Props = {
   saveAnnotationHandler: (r: DoublyLinkedListNode<Region>) => void;
 };
 
-
 export const CurrentRegion = ({
   currentRegion,
   resizedData,
@@ -57,12 +56,15 @@ export const CurrentRegion = ({
         </tbody>
       </table>
 
-      <div className="row m-auto">
+      <div className="row m-auto d-flex">
         <Annotation
           annotation={annotation || ""}
           onChange={updateAnnotationHandler}
-          onBlur={() => saveAnnotationHandler(currentRegion)}
+          saveAnnotation={() => saveAnnotationHandler(currentRegion)}
         />
+      </div>
+      <div className="row my-2 p-1 fw-bold">
+        <p>{annotation}</p>
       </div>
     </div>
   );
