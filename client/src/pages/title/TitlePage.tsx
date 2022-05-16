@@ -56,9 +56,10 @@ export const TitlePage = () => {
           setRegions(regionsList);
           currentRegionHandler(firstRegion);
           setWavesurfer(wavesurfer);
-          setRefTranscription(
-            firstRegion.getValue().data.refTranscription as string
-          );
+          if (titleId) {
+            setRefTranscription(setInitialTranscription(titleId, firstRegion));
+          }
+
           wavesurfer.on("region-click", (r, e) =>
             regionClickHandler(r, e, regionsList, wavesurfer)
           );
@@ -82,6 +83,16 @@ export const TitlePage = () => {
       }
     );
   }, []);
+
+  const setInitialTranscription = (
+    titleId: string,
+    region: DoublyLinkedListNode<Region>
+  ) => {
+    let trans =
+      localStorage.getItem(titleId) ||
+      (region.getValue().data.refTranscription as string);
+    return cleanTranscription(trans);
+  };
 
   const toRegionParams = (s: Segment, data: TitleWithSegment) => ({
     id: s.id,
@@ -264,8 +275,13 @@ export const TitlePage = () => {
     return idx;
   };
 
-  const updateAnnotationHandler = (e: React.ChangeEvent<HTMLInputElement>) =>
-    setAnnotation(e.target.value);
+  const updateAnnotationHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value
+      .replace(/\s\s+/, " ")
+      .replace(/[a-zA-Z]+/, "")
+      .trim();
+    setAnnotation(value);
+  };
 
   const saveAnnotationHandler = (
     currentRegion: DoublyLinkedListNode<Region>
@@ -293,9 +309,23 @@ export const TitlePage = () => {
   const refTranscriptionHandler = (
     e: React.ChangeEvent<HTMLTextAreaElement>
   ) => {
-    let val = e.target?.value.trim();
+    let val = cleanTranscription(e.target?.value);
+    let titleId = currentRegion?.getValue().data.titleId as string;
+    if (val) localStorage.setItem(titleId, val);
+    else localStorage.removeItem(titleId);
     setRefTranscription(val);
   };
+
+  const cleanTranscription = (trans: string) =>
+    trans
+      .replace(/“|”|‘|’/g, "")
+      .replace(/—|\*|-/g, " ")
+      .replace(/<.*>/g, " ")
+      .replace(/\s\s+/g, " ")
+      .trim()
+      .split(".")
+      .map((a) => a.trim())
+      .join(".\n");
 
   return (
     <>

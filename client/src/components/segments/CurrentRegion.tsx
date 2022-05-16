@@ -59,7 +59,7 @@ export const CurrentRegion = ({
       <div className="row m-auto d-flex">
         <Annotation
           annotation={annotation || ""}
-          onChange={updateAnnotationHandler}
+          onChangeAnnotationHandler={updateAnnotationHandler}
           saveAnnotation={() => saveAnnotationHandler(currentRegion)}
         />
       </div>

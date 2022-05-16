@@ -3,13 +3,13 @@ import { Button, ClickAction } from "./RegionButton";
 
 type AnnotationProps = {
   annotation: string;
-  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  onChangeAnnotationHandler: (e: ChangeEvent<HTMLInputElement>) => void;
   saveAnnotation: ClickAction;
 };
 
 export const Annotation = ({
   annotation,
-  onChange,
+  onChangeAnnotationHandler,
   saveAnnotation,
 }: AnnotationProps) => {
   return (
@@ -17,7 +17,7 @@ export const Annotation = ({
       <input
         className="px-1 col-11"
         value={annotation || ""}
-        onChange={onChange}
+        onChange={onChangeAnnotationHandler}
         onBlur={saveAnnotation}
       />
       <div className="col-1">
