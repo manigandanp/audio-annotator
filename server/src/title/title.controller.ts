@@ -100,12 +100,13 @@ export class TitleController {
     @Response({ passthrough: true }) res,
     @Param('id') id: string,
   ) {
-    const exportDir = `${baseDir}/exports/`;
+    const exportDir = `${baseDir}/downloads/`;
     const title = await this.titleService.findOne(id);
     const archive = archiver('tar', { gzip: true });
     const titleFullPath = path.parse(title.sourceFilePath);
     const titlePath = titleFullPath.dir;
     const titleName = titleFullPath.name;
+    fsExtra.removeSync(exportDir);
     fsExtra.ensureDirSync(exportDir);
     const zipFileName = `${titleName}.tar.gz`;
     const compressedFilePath = `${exportDir}/${zipFileName}`;
