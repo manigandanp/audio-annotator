@@ -9,6 +9,8 @@ import {
   Query,
   UseInterceptors,
   UploadedFile,
+  StreamableFile,
+  Response,
 } from '@nestjs/common';
 import { Express } from 'express';
 import { TitleService } from './title.service';
@@ -21,6 +23,7 @@ import * as fsExtra from 'fs-extra';
 import * as fs from 'fs';
 import * as lodash from 'lodash';
 import * as path from 'path';
+import * as archiver from 'archiver';
 
 const storageOptions = {
   storage: diskStorage({
@@ -89,6 +92,34 @@ export class TitleController {
           segments: t._count.segments,
         },
       };
+    });
+  }
+
+  @Get('download/:id')
+  async exportTitle(
+    @Response({ passthrough: true }) res,
+    @Param('id') id: string,
+  ) {
+    const exportDir = `${baseDir}/exports/`;
+    const title = await this.titleService.findOne(id);
+    const archive = archiver('tar', { gzip: true });
+    const titleFullPath = path.parse(title.sourceFilePath);
+    const titlePath = titleFullPath.dir;
+    const titleName = titleFullPath.name;
+    fsExtra.ensureDirSync(exportDir);
+    const zipFileName = `${titleName}.tar.gz`;
+    const compressedFilePath = `${exportDir}/${zipFileName}`;
+    const ipFile = fs.createWriteStream(compressedFilePath);
+    res.set({
+      'Content-Type': 'application/gzip',
+      'Content-Disposition': `attachment; filename=${zipFileName}`,
+    });
+    archive.append(JSON.stringify(title), { name: `${titleName}.json` });
+    archive.directory(titlePath, false);
+    archive.pipe(ipFile);
+    return archive.finalize().then((d) => {
+      const opFile = fs.createReadStream(compressedFilePath);
+      return new StreamableFile(opFile);
     });
   }
 
