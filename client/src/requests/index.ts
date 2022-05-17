@@ -1,3 +1,5 @@
+import axios from "axios";
+
 const get = (url: string) =>
   fetch(url)
     .then((res) => res.json())
@@ -28,4 +30,19 @@ const remove = (url: string, data: object) =>
     .then((data) => data.json())
     .catch((err) => console.log(`[Delete Failed] ${url} with ${err}`));
 
-export { get, post, postFormData, remove };
+// Not able to download files with fetch (filename headers is not available in cors)
+const download = (url: string) =>
+  axios
+    .get(url, { responseType: "blob" })
+    .then((res) => {
+      const url = window.URL.createObjectURL(new Blob([res.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", res.headers["x-filename"]);
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode?.removeChild(link);
+    })
+    .catch((err) => console.log(`[Fetch Failed] for ${url} with ${err}`));
+
+export { get, post, postFormData, remove, download };

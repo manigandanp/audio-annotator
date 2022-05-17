@@ -6,7 +6,7 @@ import {
 } from "../../components";
 import { Title, Option } from "../../models";
 import { useEffect, useState } from "react";
-import { get, post, postFormData, remove } from "../../requests";
+import { get, post, postFormData, remove, download } from "../../requests";
 import { titlesUrl, silenceSegmentsUrl } from "../../config";
 
 export const TitlesPage = () => {
@@ -19,6 +19,7 @@ export const TitlesPage = () => {
       }
     );
   };
+
   const segmentTitleHandler = (title: Title) => {
     toggelSpinner();
     let postData = {
@@ -33,6 +34,13 @@ export const TitlesPage = () => {
         ...prev.filter((t) => t.id !== title.id),
         { ...data, projectName: title.projectName },
       ]);
+      toggelSpinner();
+    });
+  };
+
+  const downloadTitleHandler = (title: Title) => {
+    toggelSpinner();
+    download(`${titlesUrl}/download/${title.id}`).then((d) => {
       toggelSpinner();
     });
   };
@@ -93,6 +101,7 @@ export const TitlesPage = () => {
           titles={titles}
           segmentTitleHandler={segmentTitleHandler}
           deleteTitleHandler={deleteTitleHandler}
+          downloadTitleHandler={downloadTitleHandler}
         />
       </div>
     </>

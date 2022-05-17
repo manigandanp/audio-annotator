@@ -113,7 +113,9 @@ export class TitleController {
     const ipFile = fs.createWriteStream(compressedFilePath);
     res.set({
       'Content-Type': 'application/gzip',
-      'Content-Disposition': `attachment; filename=${zipFileName}`,
+      'Content-Disposition': `attachment;filename=${zipFileName}`,
+      'x-filename': zipFileName,
+      'Access-Control-Expose-Headers': '*',
     });
     archive.append(JSON.stringify(title), { name: `${titleName}.json` });
     archive.directory(titlePath, false);
