@@ -39,8 +39,11 @@ export const AddSourceModal = ({
         />
         <FileBrowser selectedFileHandler={selectedFileHandler} />
         <textarea
+          style={{ width: "100%" }}
+          className="px-1"
           value={transcription}
           onChange={(e) => setTranscription(e.target.value)}
+          placeholder="Add Transcription"
         ></textarea>
       </Modal.Body>
       <Modal.Footer>
