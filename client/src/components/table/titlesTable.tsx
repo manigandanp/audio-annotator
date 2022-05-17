@@ -6,7 +6,7 @@ import { ChangeEvent, useEffect, useState } from "react";
 
 type Props = {
   titles: Title[];
-  deleteTitleHandler: Function;
+  deleteTitleHandler: (t: Title) => void;
   segmentTitleHandler: Function;
   downloadTitleHandler: Function;
 };

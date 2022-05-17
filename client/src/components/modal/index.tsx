@@ -1,3 +1,2 @@
-import { AddSourceModal } from "./addSourceModal";
-
-export { AddSourceModal };
+export { AddSourceModal } from "./addSourceModal";
+export { DeleteModal } from "./deleteModal";

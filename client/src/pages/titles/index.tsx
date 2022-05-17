@@ -1,9 +1,5 @@
-import {
-  AddSourceModal,
-  Header,
-  TitleTable,
-  SpinnerIcon,
-} from "../../components";
+import { Header, TitleTable, SpinnerIcon } from "../../components";
+import { AddSourceModal, DeleteModal } from "../../components/modal";
 import { Title, Option } from "../../models";
 import { useEffect, useState } from "react";
 import { get, post, postFormData, remove, download } from "../../requests";
@@ -16,8 +12,14 @@ export const TitlesPage = () => {
       (data) => {
         setTitles((prev) => prev.filter((t) => t.id !== title.id));
         toggelSpinner();
+        setDeleteTitleModal(false);
       }
     );
+  };
+
+  const deleteIconClickHandler = (title: Title) => {
+    setDeleteTitleModal(true);
+    setDeleteTitle(title);
   };
 
   const segmentTitleHandler = (title: Title) => {
@@ -45,12 +47,12 @@ export const TitlesPage = () => {
     });
   };
 
-  const modalShowHandler = () => {
-    setShowModal(true);
+  const modalAddSourceShowHandler = () => {
+    setShowAddSourceModal(true);
   };
 
-  const modalCloseHandler = () => {
-    setShowModal(false);
+  const modalAddSourceCloseHandler = () => {
+    setShowAddSourceModal(false);
   };
 
   const addSourceHandler = (
@@ -69,14 +71,16 @@ export const TitlesPage = () => {
     postFormData(titlesUrl, formData).then((data) => {
       setTitles((prev) => [...prev, data]);
       toggelSpinner();
-      setShowModal(false);
+      setShowAddSourceModal(false);
     });
   };
 
   const [titles, setTitles] = useState([] as Title[]);
-  const [showModal, setShowModal] = useState(false);
+  const [showAddSourceModal, setShowAddSourceModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const toggelSpinner = () => setLoading((prev) => !prev);
+  const [deleteTitle, setDeleteTitle] = useState<Title>();
+  const [deleteTitleModal, setDeleteTitleModal] = useState<boolean>(false);
 
   useEffect(() => {
     toggelSpinner();
@@ -88,19 +92,35 @@ export const TitlesPage = () => {
 
   return (
     <>
-      <Header isButtonEnabled={true} modalShowHandler={modalShowHandler} />
+      <Header
+        isButtonEnabled={true}
+        modalShowHandler={modalAddSourceShowHandler}
+      />
 
       <AddSourceModal
-        show={showModal}
-        modalCloseHandler={modalCloseHandler}
+        show={showAddSourceModal}
+        modalCloseHandler={modalAddSourceCloseHandler}
         addSourceHandler={addSourceHandler}
       />
+      {deleteTitle ? (
+        <DeleteModal
+          currentTitle={deleteTitle}
+          show={deleteTitleModal}
+          modalCloseHandler={() => {
+            setDeleteTitleModal(false);
+          }}
+          deleteHandler={deleteTitleHandler}
+        />
+      ) : (
+        <></>
+      )}
+
       <SpinnerIcon showSpinner={loading} />
       <div className="container">
         <TitleTable
           titles={titles}
           segmentTitleHandler={segmentTitleHandler}
-          deleteTitleHandler={deleteTitleHandler}
+          deleteTitleHandler={deleteIconClickHandler}
           downloadTitleHandler={downloadTitleHandler}
         />
       </div>
