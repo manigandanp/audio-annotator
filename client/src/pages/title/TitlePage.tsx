@@ -292,7 +292,7 @@ export const TitlePage = () => {
       segmentId: currentRegionData.data.id,
     };
     if (resizedData) regionResizeHandler();
-    if (currentRegionData.data.annotation !== annotation) {
+    if (annotation && currentRegionData.data.annotation !== annotation) {
       setShowSpinner(true);
       post(annotationsUrl, updatedAnnotation).then((res) => {
         currentRegionData.update({
@@ -319,7 +319,7 @@ export const TitlePage = () => {
   const cleanTranscription = (trans: string) =>
     trans
       .replace(/“|”|‘|’/g, "")
-      .replace(/—|\*|-/g, " ")
+      .replace(/—|–|\*|-/g, " ")
       .replace(/<.*>/g, " ")
       .replace(/\s\s+/g, " ")
       .trim()
