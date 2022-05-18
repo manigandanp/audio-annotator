@@ -72,10 +72,10 @@ export const SegmentPlayActions = ({
 }: SegmentPlayActionsProps) => {
   return (
     <div className="m-auto mb-3 text-center">
-      <PreviousRegion onClickHandler={prevRegion} shortcutKey="p" />
-      <PlayRegion onClickHandler={playRegion} shortcutKey="ctrl+space" />
-      <PauseRegion onClickHandler={pauseRegion} shortcutKey="shift+space" />
-      <NextRegion onClickHandler={nextRegion} shortcutKey="n" />
+      <PreviousRegion onClickHandler={prevRegion} shortcutKey="q" />
+      <PlayRegion onClickHandler={playRegion} shortcutKey="z" />
+      <PauseRegion onClickHandler={pauseRegion} shortcutKey="x" />
+      <NextRegion onClickHandler={nextRegion} shortcutKey="w" />
     </div>
   );
 };
