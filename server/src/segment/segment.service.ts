@@ -5,7 +5,6 @@ import {
   SilenceSegmenterClientDto,
   SegmenterClientDto,
 } from './dto/create-segment.dto';
-// import { UpdateSegmentDto } from './dto/update-segment.dto';
 import { segmenter as config } from 'config';
 import {
   SilenceSegmenterRequestDto,
@@ -16,7 +15,6 @@ import { Prisma } from '@prisma/client';
 import * as _ from 'lodash';
 import { TitleService } from 'src/title/title.service';
 import { UpdateTitleDto } from 'src/title/dto/update-title.dto';
-import { timingSafeEqual } from 'crypto';
 
 @Injectable()
 export class SegmentService {
@@ -42,7 +40,8 @@ export class SegmentService {
       trim_threshold: dto.trimThreshold || config.trimThreshold,
       silence_threshold: dto.silenceThreshold || config.sileceThreshold,
     } as SilenceSegmenterRequestDto;
-
+    // TODO - Refactor
+    // https://stackoverflow.com/questions/61449446/how-to-use-nestjs-to-get-data-from-3rd-party-api
     let response = await this.segmenterClient
       .silenceSegmenter(silenceSegmenterObj)
       .then((res) => res.data);
