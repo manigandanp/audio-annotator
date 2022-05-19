@@ -1,0 +1,7 @@
+
+
+docker build -t audio-segmenter .
+
+docker run -v /Users:/Users -it audio-segmenter
+
+And then connect to the ruuning continaer for devlepment.
