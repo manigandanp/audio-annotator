@@ -32,8 +32,8 @@ jobs:
           chmod +x install.sh
           ./install.sh --accept-all-defaults
           echo $PATH
-          echo $GITHUB_ENV
-          echo "RUNNER_PATH=/home/runner/bin" >> $GITHUB_ENV
+          echo $GITHUB_PATH
+          echo "/home/runner/bin" >> $GITHUB_PATH
           exec -l $SHELL
 
       # Runs a set of commands using the runners shell
