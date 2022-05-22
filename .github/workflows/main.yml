@@ -58,4 +58,4 @@ jobs:
 
       - name: "List Instances"
         run: |
-          oci compute instance list --compartment-id=${{secrets.OCI_USER_OCID}}
+          oci compute instance list --compartment-id=${{secrets.OCI_TENANCY_OCID}}
