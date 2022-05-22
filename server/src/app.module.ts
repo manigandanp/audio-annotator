@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { DatabaseModule } from './database/database.module';
 import { ProjectModule } from './project/project.module';
 import { TitleModule } from './title/title.module';
@@ -9,10 +7,16 @@ import { SegmenterClientService } from './segmenter-client/segmenter-client.serv
 import { SegmenterClientModule } from './segmenter-client/segmenter-client.module';
 import { AudioModule } from './audio/audio.module';
 import { AnnotationModule } from './annotation/annotation.module';
+import { join } from 'path'
+import { ServeStaticModule } from '@nestjs/serve-static'
 
 @Module({
-  imports: [DatabaseModule, ProjectModule, TitleModule, SegmentModule, SegmenterClientModule, AudioModule, AnnotationModule],
-  controllers: [AppController],
-  providers: [AppService, SegmenterClientService],
+  imports: [
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '../../../', '/client/build')
+    }),
+    DatabaseModule, ProjectModule, TitleModule, SegmentModule, SegmenterClientModule, AudioModule, AnnotationModule],
+  controllers: [],
+  providers: [SegmenterClientService],
 })
-export class AppModule {}
+export class AppModule { }
