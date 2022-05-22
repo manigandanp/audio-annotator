@@ -1,61 +1,60 @@
-# This is a basic workflow to help you get started with Actions
+name: deploy
 
-name: CI
-
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the master branch
   push:
     branches: [master]
   pull_request:
     branches: [master]
 
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   build:
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
 
-      # Runs a single command using the runners shell
-      - name: "Install OCI CLI"
+      - name: "list dir"
         run: |
-          curl -L -O https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh
-          chmod +x install.sh
-          ./install.sh --accept-all-defaults
-          echo "/home/runner/bin" >> $GITHUB_PATH
-          exec -l $SHELL
+          ls -lahrt
 
-      # Runs a set of commands using the runners shell
-      - name: "Check OCI Version"
-        run: |
-          oci -v
+      # - name: "Install OCI CLI"
+      #   run: |
+      #     curl -L -O https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh
+      #     chmod +x install.sh
+      #     ./install.sh --accept-all-defaults
+      #     echo "/home/runner/bin" >> $GITHUB_PATH
+      #     exec -l $SHELL
 
-      - name: "Write Config & Key Files"
-        run: |
-          mkdir ~/.oci
-          echo "[DEFAULT]" >> ~/.oci/config
-          echo "user=${{secrets.OCI_USER_OCID}}" >> ~/.oci/config
-          echo "fingerprint=${{secrets.OCI_FINGERPRINT}}" >> ~/.oci/config
-          echo "pass_phrase=${{secrets.OCI_KEY_PASSPHRASE}}" >> ~/.oci/config
-          echo "region=${{secrets.OCI_REGION}}" >> ~/.oci/config
-          echo "tenancy=${{secrets.OCI_TENANCY_OCID}}" >> ~/.oci/config
-          echo "key_file=~/.oci/key.pem" >> ~/.oci/config
-          echo "${{secrets.OCI_KEY_FILE_CONTENT}}" >> ~/.oci/key.pem
+      # - name: "Check OCI Version"
+      #   run: |
+      #     oci -v
 
-      - name: "Fix Config File Permissions"
-        run: |
-          oci setup repair-file-permissions --file /home/runner/.oci/config
-          oci setup repair-file-permissions --file /home/runner/.oci/key.pem
+      # - name: "Write Config & Key Files"
+      #   run: |
+      #     mkdir ~/.oci
+      #     echo "[DEFAULT]" >> ~/.oci/config
+      #     echo "user=${{secrets.OCI_USER_OCID}}" >> ~/.oci/config
+      #     echo "fingerprint=${{secrets.OCI_FINGERPRINT}}" >> ~/.oci/config
+      #     echo "pass_phrase=${{secrets.OCI_KEY_PASSPHRASE}}" >> ~/.oci/config
+      #     echo "region=${{secrets.OCI_REGION}}" >> ~/.oci/config
+      #     echo "tenancy=${{secrets.OCI_TENANCY_OCID}}" >> ~/.oci/config
+      #     echo "key_file=~/.oci/key.pem" >> ~/.oci/config
+      #     echo "${{secrets.OCI_KEY_FILE_CONTENT}}" >> ~/.oci/key.pem
 
-      - name: "List Instances"
-        run: |
-          oci compute instance list --compartment-id=${{secrets.OCI_TENANCY_OCID}}
+      # - name: "Fix Config File Permissions"
+      #   run: |
+      #     oci setup repair-file-permissions --file /home/runner/.oci/config
+      #     oci setup repair-file-permissions --file /home/runner/.oci/key.pem
+
+      # - name: "Use Existing Instance to deploy"
+      #   run: |
+      #     echo "::set-env name=INSTANCE_OCID::$( \
+      #       oci compute instance list \
+      #       --lifecycle-state RUNNING \
+      #       --compartment-id ${{secrets.VM_COMPARTMENT_OCID}} \
+      #       --display-name cicd-demo \
+      #       --query "data [0].id" \
+      #       --raw-output \
+      #     )"
