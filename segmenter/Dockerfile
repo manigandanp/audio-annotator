@@ -1,4 +1,4 @@
-FROM python:latest
+FROM python:slim
 
 RUN apt-get update && apt-get -y install libsndfile1
 RUN python -m pip install --upgrade pip
@@ -7,6 +7,8 @@ RUN pip install redis msgpack-numpy
 
 WORKDIR /audio-annotator/segmenter
 
+COPY . .
+
 EXPOSE 8000
 
-CMD uvicorn app:app --proxy-headers --host 0.0.0.0 --port 8000 --reload
+CMD APP_ENV=production uvicorn app:app --proxy-headers --host 0.0.0.0 --port 8000

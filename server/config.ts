@@ -1,5 +1,5 @@
 export const segmenterUrl = 'http://localhost:8000';
-export const baseDir = '../data';
+export const baseDir = process.env.NODE_ENV == 'production' ? '/data' : '../data';
 export const uploadsDir = `${baseDir}/uploads/`;
 export const segmenter = {
   trimThreshold: 10,

@@ -1,11 +1,17 @@
 version: "3.9"
 services:
   annotator:
-    build: ./server
+    build: 
+      context: . 
+      dockerfile: Dockerfile.prod
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
     ports:
       - "3000:3000"
     volumes:
-      - .:/audio-annotator/
+      - /data/:/data/
+    depends_on:
+      - segmenter
 
   redis:
     image: "redis:alpine"
@@ -15,13 +21,6 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - .:/audio-annotator/
+      - /data/:/data/
     depends_on:
       - redis
-
-  client:
-    build: ./client
-    ports:
-      - "1234:1234"
-    volumes:
-      - .:/audio-annotator/

@@ -15,9 +15,11 @@ app.add_middleware(
     allow_credentials=True,
 )
 
+
 @app.get('/')
 def index():
     return RedirectResponse(url="/docs/")
+
 
 @app.post('/v2/segment/silence')
 # def segment_on_silence_v2(project:str, source_path:str, silence_threshold_in_db: Optional[int] = 75, trim_threshold_in_db: Optional[int] = 20):
@@ -27,6 +29,7 @@ def segment_on_silence_v2(silence: SilenceSegmenter):
     segment_objs = write_wav_files(
         segmented_meta['segments'], segmented_meta['sample_rate'])
     return {**segmented_meta, 'segments': segment_objs}
+
 
 @app.post('/v2/segment/samples')
 # def segment_on_samples_v2(project:str, source_path:str, start_sample:int, end_sample:int, trim_threshold_in_db: Optional[int] = 20):

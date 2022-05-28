@@ -5,12 +5,17 @@ RUN python -m pip install --upgrade pip
 RUN pip install librosa soundfile numpy fastapi uvicorn[standard] sqlalchemy
 RUN pip install redis msgpack-numpy
 
+WORKDIR /audio-annotator/client/
+COPY ./client/package.json ./package.json 
+RUN npm install --legacy-peer-deps
 
-WORKDIR /audio-annotator/server/
+WORKDIR /audio-annotator/server
+COPY ./server/package.json ./package.json 
 RUN npm i -g @nestjs/cli
 RUN npm install 
+RUN npx prisma generate
+RUN npx prisma migrate dev
 
-WORKDIR /audio-annotator/client/
-RUN npm install 
-
-
+WORKDIR /audio-annotator/segmenter
+EXPOSE 8000
+CMD APP_ENV=development uvicorn app:app --proxy-headers --host 0.0.0.0 --port 8000 --reload

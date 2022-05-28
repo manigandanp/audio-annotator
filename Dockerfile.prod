@@ -1,0 +1,47 @@
+FROM node:slim as app-builder
+
+WORKDIR /server
+
+COPY ./server/ ./
+
+RUN npm install
+
+RUN npx prisma generate
+
+RUN npm run build 
+
+RUN rm -rf node_modules 
+
+RUN npm install --omit=dev
+
+WORKDIR /client
+
+COPY ./client/ ./
+
+RUN npm install --legacy-peer-deps
+
+RUN npm run build 
+
+RUN rm -rf node_modules 
+
+RUN npm install --omit=dev  --legacy-peer-deps
+
+FROM node:slim
+
+WORKDIR /app/client
+
+COPY --from=app-builder /client/build ./build 
+
+COPY --from=app-builder /client/node_modules ./node_modules
+
+WORKDIR /app/server
+
+COPY --from=app-builder /server/dist ./dist 
+
+COPY --from=app-builder /server/package.json ./package.json
+
+COPY --from=app-builder /server/node_modules ./node_modules
+
+EXPOSE 3000
+
+CMD ["npm", "run", "start:prod"]

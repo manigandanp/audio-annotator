@@ -1,18 +1,32 @@
-http://localhost:3000/static/index.html?book=ponniyinselvan&chapter=1.4
+## Dev inside Container
+- Run following docker-compose commands
+```
+  docker-compose -f ./docker-compose.dev.yml build 
+  docker-compose -f ./docker-compose.dev.yml up
+```
+- This will start `segmenter - 8000`, `postgres db - 5432` and `redis`
+- Then use VS Code Remote Dev Extension to connect to running container
+- Once connected to container, goto `server` and install all the npm packages 
+- And run `npm run start:dev`
+- Same goes for `clinet`. Goto clinet and run `npm start`
+- Now connect to `localhost:3001` for clinet
+- And `localhost:3000` for server
 
-# https://www.chennailibrary.com/kalki/sivakamiyinsabatham/ss1-9.html
+> In Short
+```
+  docker-compose -f ./docker-compose.dev.yml build 
+  docker-compose -f ./docker-compose.dev.yml up
+  
+  cd server
+  npm install
+  npx prisma migraate dev
+  npx prisma generate
+  npm run start:dev
+  
+  cd client
+  npm install
+  npm start
+```
 
-# http://book.ponniyinselvan.in/part-1/chapter-1.html
-
-# youtube-dl -x --audio-format wav --yes-playlist --playlist-start 1 "<URL>"
-
-# https://www.youtube.com/watch?v=eiAaGBwWHbM&list=PLYQQLwd0OXcSX3y9Qu5CgWNGvA2hNtqfy&index=39
-
-# youtube-dl --proxy "http://87.197.156.62:23500" -x --audio-format wav --yes-playlist --playlist-start 63 "https://www.youtube.com/watch?v=kvhW7dcRl8o&list=PLYQQLwd0OXcSX3y9Qu5CgWNGvA2hNtqfy"
-
-Oracle Block volume mounting and partitioning
-
-<!-- https://www.youtube.com/watch?v=g_QdBktjOCU -->
-
-Go Server installtion
-https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-gocd-on-ubuntu-16-04
+## Prod Build
+- TODO:
