@@ -21,7 +21,7 @@ jobs:
 
       - name: Docker build
         run: |
-          echo DATABASE_URL=${{secrets.DATABASE_URL}} >> $GITHUB_PATH
+          echo "DATABASE_URL=${{secrets.DATABASE_URL}}" >> $GITHUB_PATH
           docker-compose build --build-arg DATABASE_URL=${{secrets.DATABASE_URL}}
           docker-compose push
 
