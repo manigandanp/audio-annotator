@@ -23,9 +23,7 @@ jobs:
         run: |
           echo DATABASE_URL=${{secrets.DATABASE_URL}} >> $GITHUB_PATH
           docker-compose build --build-arg DATABASE_URL=${{secrets.DATABASE_URL}}
-
-      - name: Docker push
-        run: docker-compose push
+          docker-compose push
 
       # - name: "Install OCI CLI"
       #   run: |
