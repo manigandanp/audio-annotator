@@ -94,7 +94,7 @@ jobs:
           username: ${{ secrets.VM_SSH_USER }}
           key: ${{ secrets.VM_SSH_PRIVATE_KEY }}
           source: "./docker-compose.yml"
-          target: "/tmp/docker-compose.yml"
+          target: "/tmp/"
 
       - name: "Restart Containers"
         uses: appleboy/ssh-action@master
