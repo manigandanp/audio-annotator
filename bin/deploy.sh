@@ -5,5 +5,5 @@
 echo "running docker compose build"
 # docker-compose build 
 
-echo ${{secrets.DATABASE_URL}}
+echo ${DATABASE_URL}
 # docker-compose push 
