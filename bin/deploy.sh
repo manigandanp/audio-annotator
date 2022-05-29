@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd ./sever
+cd ./server
 
 ls -lrht 
 
