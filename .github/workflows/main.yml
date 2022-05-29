@@ -6,6 +6,9 @@ on:
 
   workflow_dispatch:
 
+env:
+  DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -19,9 +22,9 @@ jobs:
       #     username: ${{ secrets.DOCKERHUB_USERNAME }}
       #     password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Docker build
-        run: |
-          echo "DATABASE_URL=${{secrets.DATABASE_URL}}" >> $GITHUB_PATH
+      # - name: Docker build
+      #   run: |
+      #     echo "DATABASE_URL=${{secrets.DATABASE_URL}}" >> $GITHUB_PATH
       #     docker-compose build --build-arg DATABASE_URL=${{secrets.DATABASE_URL}}
       #     docker-compose push
 
