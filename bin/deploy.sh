@@ -1,9 +1,11 @@
 #!/bin/bash
 
-# export DATABASE_URL=${DATABASE_URL}
+ls -lrht
 
-echo "running docker compose build"
-# docker-compose build 
+# # export DATABASE_URL=${DATABASE_URL}
 
-echo ${DATABASE_URL}
-# docker-compose push 
+# echo "running docker compose build"
+# # docker-compose build 
+
+# echo ${DATABASE_URL}
+# # docker-compose push 
