@@ -104,6 +104,7 @@ jobs:
           key: ${{ secrets.VM_SSH_PRIVATE_KEY }}
           script: |
             export DATABASE_URL=${DATABASE_URL}
+            sudo rm -f /home/docker-compose.yml
             sudo mv /tmp/docker-compose.yml /home/docker-compose.yml
             cd /home
             sudo docker-compose down
