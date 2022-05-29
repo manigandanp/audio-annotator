@@ -1,6 +1,10 @@
 #!/bin/bash
 
-ls -lrht
+cd ./sever
+
+npm install prisma
+
+npx prisma migrate deploy
 
 # # export DATABASE_URL=${DATABASE_URL}
 
