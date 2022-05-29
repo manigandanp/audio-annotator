@@ -2,6 +2,8 @@
 
 cd ./sever
 
+ls -lrht 
+
 npm install prisma
 
 npx prisma migrate deploy
