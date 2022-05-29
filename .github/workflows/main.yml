@@ -31,58 +31,58 @@ jobs:
       # - name: Docker push
       #   run: docker-compose push
 
-      - name: "Install OCI CLI"
-        run: |
-          curl -L -O https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh
-          chmod +x install.sh
-          ./install.sh --accept-all-defaults
-          echo "/home/runner/bin" >> $GITHUB_PATH
-          exec -l $SHELL
+      # - name: "Install OCI CLI"
+      #   run: |
+      #     curl -L -O https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh
+      #     chmod +x install.sh
+      #     ./install.sh --accept-all-defaults
+      #     echo "/home/runner/bin" >> $GITHUB_PATH
+      #     exec -l $SHELL
 
-      - name: "Check OCI Version"
-        run: |
-          oci -v
+      # - name: "Check OCI Version"
+      #   run: |
+      #     oci -v
 
-      - name: "Write Config & Key Files"
-        run: |
-          mkdir ~/.oci
-          echo "[DEFAULT]" >> ~/.oci/config
-          echo "user=${{secrets.OCI_USER_OCID}}" >> ~/.oci/config
-          echo "fingerprint=${{secrets.OCI_FINGERPRINT}}" >> ~/.oci/config
-          echo "pass_phrase=${{secrets.OCI_KEY_PASSPHRASE}}" >> ~/.oci/config
-          echo "region=${{secrets.OCI_REGION}}" >> ~/.oci/config
-          echo "tenancy=${{secrets.OCI_TENANCY_OCID}}" >> ~/.oci/config
-          echo "key_file=~/.oci/key.pem" >> ~/.oci/config
-          echo "${{secrets.OCI_KEY_FILE_CONTENT}}" >> ~/.oci/key.pem
+      # - name: "Write Config & Key Files"
+      #   run: |
+      #     mkdir ~/.oci
+      #     echo "[DEFAULT]" >> ~/.oci/config
+      #     echo "user=${{secrets.OCI_USER_OCID}}" >> ~/.oci/config
+      #     echo "fingerprint=${{secrets.OCI_FINGERPRINT}}" >> ~/.oci/config
+      #     echo "pass_phrase=${{secrets.OCI_KEY_PASSPHRASE}}" >> ~/.oci/config
+      #     echo "region=${{secrets.OCI_REGION}}" >> ~/.oci/config
+      #     echo "tenancy=${{secrets.OCI_TENANCY_OCID}}" >> ~/.oci/config
+      #     echo "key_file=~/.oci/key.pem" >> ~/.oci/config
+      #     echo "${{secrets.OCI_KEY_FILE_CONTENT}}" >> ~/.oci/key.pem
 
-      - name: "Fix Config File Permissions"
-        run: |
-          oci setup repair-file-permissions --file /home/runner/.oci/config
-          oci setup repair-file-permissions --file /home/runner/.oci/key.pem
+      # - name: "Fix Config File Permissions"
+      #   run: |
+      #     oci setup repair-file-permissions --file /home/runner/.oci/config
+      #     oci setup repair-file-permissions --file /home/runner/.oci/key.pem
 
-      - name: "Use Existing Instance to deploy"
-        run: |
-          echo "::add-mask::INSTANCE_OCID=$( \
-            oci compute instance list \
-            --lifecycle-state RUNNING \
-            --compartment-id ${{secrets.VM_COMPARTMENT_OCID}} \
-            --display-name dev-server \
-            --query "data [0].id" \
-            --raw-output \
-          )" >> $GITHUB_ENV
+      # - name: "Use Existing Instance to deploy"
+      #   run: |
+      #     echo "INSTANCE_OCID=$( \
+      #       oci compute instance list \
+      #       --lifecycle-state RUNNING \
+      #       --compartment-id ${{secrets.VM_COMPARTMENT_OCID}} \
+      #       --display-name dev-server \
+      #       --query "data [0].id" \
+      #       --raw-output \
+      #     )" >> $GITHUB_ENV
 
-      - name: "Get Instance IP"
-        run: |
-          echo "::add-mask::INSTANCE_IP=$( \
-            oci compute instance list-vnics \
-            --instance-id ${INSTANCE_OCID} \
-            --query 'data [0]."public-ip"' \
-            --raw-output \
-          )" >> $GITHUB_ENV
+      # - name: "Get Instance IP"
+      #   run: |
+      #     echo "INSTANCE_IP=$( \
+      #       oci compute instance list-vnics \
+      #       --instance-id ${INSTANCE_OCID} \
+      #       --query 'data [0]."public-ip"' \
+      #       --raw-output \
+      #     )" >> $GITHUB_ENV
 
       - name: "Wait for SSH"
         run: |
-          while ! nc -w5 -z ${INSTANCE_IP} 22; do
+          while ! nc -w5 -z ${{secrets.VM_SSH_IP}} 22; do
                   sleep 5
                   echo "SSH not available..."
           done; echo "SSH ready!"
@@ -90,8 +90,8 @@ jobs:
       - name: "Getting into Machine"
         uses: appleboy/ssh-action@master
         with:
-          host: ${INSTANCE_IP}
-          username: ubuntu
+          host: ${{ secrets.VM_SSH_IP }}
+          username: ${{ secrets.VM_SSH_USER }}
           key: ${{ secrets.VM_SSH_PRIVATE_KEY }}
           script: |
             ls -lrht
