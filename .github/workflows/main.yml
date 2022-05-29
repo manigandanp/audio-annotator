@@ -94,6 +94,6 @@ jobs:
           username: opc
           key: ${{ secrets.VM_SSH_PRIVATE_KEY }}
           script: |
-            ls -lrht /
+            ls -lrht
             pwd
             whoami
