@@ -87,22 +87,26 @@ jobs:
                   echo "SSH not available..."
           done; echo "SSH ready!"
 
-      - name: copy file via ssh key
+      - name: Copy docker-compose
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.VM_SSH_IP }}
           username: ${{ secrets.VM_SSH_USER }}
           key: ${{ secrets.VM_SSH_PRIVATE_KEY }}
           source: "./docker-compose.yml"
-          target: "/home/docker-compose.yml"
+          target: "/tmp/docker-compose.yml"
 
-      - name: "Getting into Machine"
+      - name: "Restart Containers"
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.VM_SSH_IP }}
           username: ${{ secrets.VM_SSH_USER }}
           key: ${{ secrets.VM_SSH_PRIVATE_KEY }}
           script: |
-            ls -lrht /home
-            pwd
-            whoami
+            sudo export DATABASE_URL=${DATABASE_URL}
+            sudo mv /tmp/docker-compose.yml /home/
+            cd /home
+            sudo docker-compose down
+            sudo docker-compose rm -f manikandan305/annotator manikandan305/segmenter
+            sudo docker image rm -f manikandan305/annotator manikandan305/segmenter
+            sudo docker-compose up -d --force-recreate annotator segmenter
