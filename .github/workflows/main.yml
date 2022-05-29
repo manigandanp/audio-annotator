@@ -16,20 +16,20 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      # - name: Docker Login
-      #   uses: docker/login-action@v2.0.0
-      #   with:
-      #     username: ${{ secrets.DOCKERHUB_USERNAME }}
-      #     password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      # - name: Docker build
-      #   run: |
-      #     echo "DATABASE_URL=${{secrets.DATABASE_URL}}" >> $GITHUB_PATH
-      #     docker-compose build --build-arg DATABASE_URL=${{secrets.DATABASE_URL}}
-      #     docker-compose push
-
-      - name: Moving build to artifacts directory
+      - name: Migrate DB Schema to Prod
         run: bash ./bin/deploy.sh
+
+      - name: Docker build
+        run: docker-compose build
+
+      - name: Docker Login
+        uses: docker/login-action@v2.0.0
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Docker push
+        run: docker-compose push
 
       # - name: "Install OCI CLI"
       #   run: |
