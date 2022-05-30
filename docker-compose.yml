@@ -1,9 +1,6 @@
 version: "3.9"
 services:
   annotator:
-    build: 
-      context: . 
-      dockerfile: Dockerfile.prod
     environment:
       - DATABASE_URL=${DATABASE_URL}
     image: manikandan305/annotator
@@ -18,7 +15,6 @@ services:
     image: "redis:alpine"
 
   segmenter:
-    build: ./segmenter
     image: manikandan305/segmenter
     ports:
       - "8000:8000"
