@@ -56,7 +56,7 @@ jobs:
             sudo rm -f /home/docker-compose.yml
             sudo mv /tmp/docker-compose.yml /home/
             cd /home
-            echo DATABASE_URL=${DATABASE_URL} > .env
+            sudo echo DATABASE_URL=${DATABASE_URL} > .env
             sudo docker-compose down
             sudo docker-compose rm -f manikandan305/annotator manikandan305/segmenter
             sudo docker image rm -f manikandan305/annotator manikandan305/segmenter
