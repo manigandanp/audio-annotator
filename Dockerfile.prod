@@ -1,47 +1,41 @@
-FROM node:slim as app-builder
+FROM --platform=linux/arm64 node:16.15.0 as app-builder
 
 WORKDIR /server
 
-COPY ./server/ ./
+COPY ./server/package*.json ./
 
-RUN npm install
+RUN npm install -g @nestjs/cli
+
+RUN npm ci --omit=dev
+
+COPY ./server/ ./
 
 RUN npx prisma generate
 
 RUN npm run build 
 
-RUN rm -rf node_modules 
-
-RUN npm install --omit=dev
-
 WORKDIR /client
+
+COPY ./client/package*.json ./
 
 COPY ./client/ ./
 
-RUN npm install --legacy-peer-deps
+RUN npm ci --legacy-peer-deps
 
 RUN npm run build 
 
-RUN rm -rf node_modules 
-
-RUN npm install --omit=dev  --legacy-peer-deps
-
-FROM node:slim
+FROM --platform=linux/arm64 node:16.15.0
 
 WORKDIR /app/client
 
 COPY --from=app-builder /client/build ./build 
 
-# COPY --from=app-builder /client/node_modules ./node_modules
-
 WORKDIR /app/server
 
 COPY --from=app-builder /server/dist ./dist 
-
-COPY --from=app-builder /server/package.json ./package.json
 
 COPY --from=app-builder /server/node_modules ./node_modules
 
 EXPOSE 3000
 
-CMD ["npm", "run", "start:prod"]
+CMD ["node", "dist/src/main"]

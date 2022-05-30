@@ -1,4 +1,4 @@
-FROM python:slim
+FROM --platform=linux/arm64 python:slim
 
 RUN apt-get update && apt-get -y install libsndfile1
 RUN python -m pip install --upgrade pip
