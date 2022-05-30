@@ -56,8 +56,6 @@ jobs:
             sudo rm -f /home/docker-compose.yml
             sudo mv /tmp/docker-compose.yml /home/
             cd /home
-            sudo echo DATABASE_URL=${{ env.DATABASE_URL }} > /tmp/.annotator_env
-            sudo mv /tmp/.annotator_env .
             sudo docker-compose down
             sudo docker-compose rm -f manikandan305/annotator manikandan305/segmenter
             sudo docker image rm -f manikandan305/annotator manikandan305/segmenter
