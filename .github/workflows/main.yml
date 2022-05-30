@@ -53,10 +53,11 @@ jobs:
           username: ${{ secrets.VM_SSH_USER }}
           key: ${{ secrets.VM_SSH_PRIVATE_KEY }}
           script: |
-            export DATABASE_URL=$DATABASE_URL
             sudo rm -f /home/docker-compose.yml
             sudo mv /tmp/docker-compose.yml /home/
             cd /home
+            sudo echo DATABASE_URL=$DATABASE_URL > /tmp/.annotator_env
+            sudo mv /tmp/.annotator_env .
             sudo docker-compose down
             sudo docker-compose rm -f manikandan305/annotator manikandan305/segmenter
             sudo docker image rm -f manikandan305/annotator manikandan305/segmenter
