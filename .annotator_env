@@ -1,0 +1,1 @@
+DATABASE_URL=postgresql://postgres:Sabari123129.146.85.153:5432/annotator?schema=public&pool_timeout=0
