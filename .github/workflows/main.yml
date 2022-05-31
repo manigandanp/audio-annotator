@@ -56,9 +56,9 @@ jobs:
             sudo rm -f /home/docker-compose.yml
             sudo mv /tmp/docker-compose.yml /home/
             cd /home
+            sudo echo "DATABASE_URL=\'${{ secrets.DATABASE_URL }}\'" > /tmp/.env
+            sudo mv /tmp/.env ./
             sudo docker-compose down
             sudo docker-compose rm -f manikandan305/annotator manikandan305/segmenter
             sudo docker image rm -f manikandan305/annotator manikandan305/segmenter
-
-      - name: Restart Service
-        run: bash ./bin/deploy.sh
+            sudo docker-compose up -d --force-recreate annotator segmenter
