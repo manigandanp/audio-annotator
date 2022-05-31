@@ -28,7 +28,7 @@ FROM --platform=linux/arm64 node:16.15.0
 
 WORKDIR /app/client
 
-ENV NODE_ENV=production
+ENV NODE_ENV production
 
 COPY --from=app-builder /client/build ./build 
 
@@ -40,4 +40,4 @@ COPY --from=app-builder /server/node_modules ./node_modules
 
 EXPOSE 3000
 
-CMD ["NODE_ENV=production", "node", "dist/src/main"]
+CMD ["node", "dist/src/main"]
