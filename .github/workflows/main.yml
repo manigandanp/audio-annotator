@@ -46,7 +46,7 @@ jobs:
           source: "./docker-compose.yml"
           target: "/tmp/"
 
-      - name: "Remove Old Containers and Pull latset"
+      - name: "Restart Containers"
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.VM_SSH_IP }}
@@ -62,4 +62,3 @@ jobs:
             sudo docker-compose rm -f manikandan305/annotator manikandan305/segmenter
             sudo docker image rm -f manikandan305/annotator manikandan305/segmenter
             sudo docker-compose up -d --force-recreate annotator segmenter
-            sudo rm -f /home/.env
