@@ -18,9 +18,9 @@ WORKDIR /client
 
 COPY ./client/package*.json ./
 
-COPY ./client/ ./
-
 RUN npm ci --legacy-peer-deps
+
+COPY ./client/ ./
 
 RUN npm run build 
 

@@ -24,11 +24,6 @@ jobs:
             uname -a
             echo ::set-output name=uname::$(uname -a)
 
-      - name: Arch Test
-        run: |
-          uname -a
-          echo ::set-output name=uname::$(uname -a)
-
       - name: Migrate DB Schema to Prod
         run: bash ./bin/db_migrate.sh
 
