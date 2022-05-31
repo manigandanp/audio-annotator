@@ -11,7 +11,7 @@ utils = Utils()
 DATA_FOLDER = '/data' if(environ["APP_ENV"] == 'production') else "../data"
 
 def get_title_and_path(project, source_file_path):
-    project_folder = project.replace(' ', '_')
+    project_folder = project.replace(' ', '_').lower()
     title = utils.filename_from_path(source_file_path)
     base_path = '{}/{}/{}'.format(DATA_FOLDER, project_folder, title)
     wavs_path = utils.create_path(f'{base_path}/wavs')
