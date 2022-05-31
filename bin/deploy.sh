@@ -1,7 +1,3 @@
 #!/bin/bash
 
-cd ./server
-
-npm install prisma
-
-npx prisma migrate deploy
+sudo docker-compose up -d --force-recreate annotator segmenter

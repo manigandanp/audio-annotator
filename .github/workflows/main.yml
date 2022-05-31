@@ -17,7 +17,7 @@ jobs:
       - uses: actions/checkout@v3
 
       # - name: Migrate DB Schema to Prod
-      #   run: bash ./bin/deploy.sh
+      #   run: bash ./bin/db_migrate.sh
 
       # - name: Docker Login
       #   uses: docker/login-action@v2.0.0
@@ -46,7 +46,7 @@ jobs:
           source: "./docker-compose.yml"
           target: "/tmp/"
 
-      - name: "Restart Containers"
+      - name: "Remove Old Containers and Pull latset"
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.VM_SSH_IP }}
@@ -55,10 +55,10 @@ jobs:
           script: |
             sudo rm -f /home/docker-compose.yml
             sudo mv /tmp/docker-compose.yml /home/
-            sudo echo "DATABASE_URL=\'${{ secrets.DATABASE_URL }}\'" > /tmp/.annotator_env
-            sudo mv /tmp/.annotator_env ./
             cd /home
             sudo docker-compose down
             sudo docker-compose rm -f manikandan305/annotator manikandan305/segmenter
             sudo docker image rm -f manikandan305/annotator manikandan305/segmenter
-            sudo DATABASE_URL=\'${{ secrets.DATABASE_URL }}\' docker-compose up -d --force-recreate annotator segmenter
+
+      - name: Restart Service
+        run: bash ./bin/deploy.sh
