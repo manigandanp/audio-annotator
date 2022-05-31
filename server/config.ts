@@ -1,14 +1,14 @@
 let host: string, dataDir: string;
-
+const segmenterPort = 8000
 if (process.env.NODE_ENV == 'production') {
   host = 'segmenter'
   dataDir = '/data'
 } else {
-  host = 'localhost:8000'
+  host = 'localhost'
   dataDir = '../data'
 }
 
-export const segmenterUrl = `http://${host}`;
+export const segmenterUrl = `http://${host}:${segmenterPort}`;
 export const baseDir = dataDir;
 export const uploadsDir = `${baseDir}/uploads/`;
 export const segmenter = {
