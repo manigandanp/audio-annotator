@@ -1,3 +1,3 @@
 #!/bin/bash
 
-sudo docker-compose up -d --force-recreate annotator segmenter
+sudo DATABASE_URL=$DATABASE_URL docker-compose up -d --force-recreate annotator segmenter
