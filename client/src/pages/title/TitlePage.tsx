@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { CurrentRegion, Header, SpinnerIcon } from "../../components";
-import {
-  SegmentPlayActions,
-  SegmentUpdateActions,
-} from "../../components/segments";
+import { SegmentPlayActions } from "../../components/segments";
+import { SegmentUpdateActions } from "../../components/segments";
+import { SegmentTrimActions } from "../../components/segments";
 import {
   titlesUrl,
   audioUrl,
@@ -22,6 +21,7 @@ import {
   DoublyLinkedList,
   DoublyLinkedListNode,
 } from "@datastructures-js/linked-list";
+import { start } from "repl";
 
 export const TitlePage = () => {
   const { titleId } = useParams();
@@ -66,16 +66,7 @@ export const TitlePage = () => {
 
           wavesurfer.on("region-update-end", (region: Region, action) => {
             currentRegionHandler(findRegionFromList(region, regionsList));
-            let sampleRate = region.data.sampleRate as number;
-            let newStartSample = timeToSample(region.start, sampleRate, true);
-            let newEndSample = timeToSample(region.end, sampleRate);
-            let newDuration = (newEndSample - newStartSample) / sampleRate;
-            setResizedData({
-              ...region.data,
-              startSample: newStartSample,
-              endSample: newEndSample,
-              duration: newDuration,
-            });
+            resizingSegment(region);
           });
         });
 
@@ -132,6 +123,22 @@ export const TitlePage = () => {
       if (shouldPlay) playCurrentRegion(regionNode.getValue());
     } else console.log("No regions selected");
   };
+
+  const trimLeftSilence = () => {
+    if (currentRegion) {
+      let c: Region = currentRegion?.getValue()
+      c.update({ start: c.start + 0.03 })
+      resizingSegment(c)
+    } else console.log("No Segments to left trim");
+  }
+
+  const trimRightSilence = () => {
+    if (currentRegion) {
+      let c: Region = currentRegion?.getValue()
+      c.update({ end: c.end - 0.03 })
+      resizingSegment(c)
+    } else console.log("No Segments to left trim");
+  }
 
   const samplesToTime = (sample: number, sampleRate: number) =>
     sample / sampleRate;
@@ -327,6 +334,19 @@ export const TitlePage = () => {
       .map((a) => a.trim())
       .join(".\n");
 
+  const resizingSegment = (region: Region) => {
+    let sampleRate = region.data.sampleRate as number;
+    let newStartSample = timeToSample(region.start, sampleRate, true);
+    let newEndSample = timeToSample(region.end, sampleRate);
+    let newDuration = (newEndSample - newStartSample) / sampleRate;
+    setResizedData({
+      ...region.data,
+      startSample: newStartSample,
+      endSample: newEndSample,
+      duration: newDuration,
+    });
+  }
+
   return (
     <>
       <Header isButtonEnabled={false} />
@@ -355,6 +375,12 @@ export const TitlePage = () => {
               addRegion={addNewRegionHandler}
               deleteRegion={deleteHandler}
               resizeRegion={regionResizeHandler}
+            />
+          </div>
+          <div className="col">
+            <SegmentTrimActions
+              trimSilenceOnLeft={trimLeftSilence}
+              trimSilenceOnRight={trimRightSilence}
             />
           </div>
           <div className="col">
