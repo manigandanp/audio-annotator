@@ -4,7 +4,7 @@ import { RegionAction, Button, ClickAction } from "./RegionButton";
 const PreviousRegion = ({ onClickHandler, shortcutKey }: RegionAction) => {
   return (
     <Button onClickHandler={onClickHandler} shortcutKey={shortcutKey}>
-      Prev
+      Prev(q)
     </Button>
   );
 };
@@ -12,7 +12,7 @@ const PreviousRegion = ({ onClickHandler, shortcutKey }: RegionAction) => {
 const NextRegion = ({ onClickHandler, shortcutKey }: RegionAction) => {
   return (
     <Button onClickHandler={onClickHandler} shortcutKey={shortcutKey}>
-      Next
+      Next(w)
     </Button>
   );
 };
@@ -20,7 +20,7 @@ const NextRegion = ({ onClickHandler, shortcutKey }: RegionAction) => {
 const PlayRegion = ({ onClickHandler, shortcutKey }: RegionAction) => {
   return (
     <Button onClickHandler={onClickHandler} shortcutKey={shortcutKey}>
-      Play
+      Play(z)
     </Button>
   );
 };
@@ -28,7 +28,7 @@ const PlayRegion = ({ onClickHandler, shortcutKey }: RegionAction) => {
 const PauseRegion = ({ onClickHandler, shortcutKey }: RegionAction) => {
   return (
     <Button onClickHandler={onClickHandler} shortcutKey={shortcutKey}>
-      Pause
+      Pause(x)
     </Button>
   );
 };
@@ -36,7 +36,7 @@ const PauseRegion = ({ onClickHandler, shortcutKey }: RegionAction) => {
 const AddRegion = ({ onClickHandler, shortcutKey }: RegionAction) => {
   return (
     <Button onClickHandler={onClickHandler} shortcutKey={shortcutKey}>
-      Add
+      Add(a)
     </Button>
   );
 };
@@ -44,7 +44,7 @@ const AddRegion = ({ onClickHandler, shortcutKey }: RegionAction) => {
 const DeleteRegion = ({ onClickHandler, shortcutKey }: RegionAction) => {
   return (
     <Button onClickHandler={onClickHandler} shortcutKey={shortcutKey}>
-      Delete
+      Delete(d)
     </Button>
   );
 };
@@ -52,7 +52,23 @@ const DeleteRegion = ({ onClickHandler, shortcutKey }: RegionAction) => {
 const ResizeRegion = ({ onClickHandler, shortcutKey }: RegionAction) => {
   return (
     <Button onClickHandler={onClickHandler} shortcutKey={shortcutKey}>
-      Resize
+      Resize(r)
+    </Button>
+  );
+};
+
+const TrimLeft = ({ onClickHandler, shortcutKey }: RegionAction) => {
+  return (
+    <Button onClickHandler={onClickHandler} shortcutKey={shortcutKey}>
+      LTrim(c)
+    </Button>
+  );
+};
+
+const TrimRight = ({ onClickHandler, shortcutKey }: RegionAction) => {
+  return (
+    <Button onClickHandler={onClickHandler} shortcutKey={shortcutKey}>
+      RTrim(v)
     </Button>
   );
 };
@@ -99,3 +115,18 @@ export const SegmentUpdateActions = ({
     </div>
   );
 };
+
+
+interface SegmentTrimActionsProps {
+  trimSilenceOnLeft: ClickAction
+  trimSilenceOnRight: ClickAction
+}
+export const SegmentTrimActions = ({
+  trimSilenceOnLeft,
+  trimSilenceOnRight
+}: SegmentTrimActionsProps) => {
+  return (<div className="m-auto mb-3 text-center">
+    <TrimLeft onClickHandler={trimSilenceOnLeft} shortcutKey="c" />
+    <TrimRight onClickHandler={trimSilenceOnRight} shortcutKey="v" />
+  </div>)
+}
