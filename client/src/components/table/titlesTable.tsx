@@ -28,12 +28,15 @@ export const TitlesTable = ({
   const sum = (arr: Array<number>) => arr.reduce((t, c) => t + c, 0);
   const totalDuration = sum(titles.map((a) => a.sourceDuration || 0));
   const totalSize = sum(titles.map((a) => a.sourceFileSize || 0));
-  const totalSegments = sum(titles.map((a) => a.segments || 0));
+  const totalSegments = sum(titles.map((a) => a.segments?.length || 0));
+  const annotatedSegments = sum(titles.map((a) => a.segments?.filter(b => b.annotation).length || 0));
   const titleSearchHandler = (e: ChangeEvent<HTMLInputElement>) => {
     let v = e.target?.value;
     let filtered = titles.filter((a) => a.sourceFilename.includes(v));
     setFilteredTitles(filtered);
   };
+  const getAnnotatedDutation = (title: Title) => title.segments?.filter(a => a.annotation).map(a => a.duration)
+  const annotatedDuration = sum(titles.flatMap(t => getAnnotatedDutation(t) || [0]))
 
   const searchTd = (
     <td>
@@ -64,9 +67,12 @@ export const TitlesTable = ({
               <i className="bi bi-search px-1 text-primary fs-6 download"></i>
             </td>
           )}
-          <td>{`Duration (${formatDuration(totalDuration || 0)})`}</td>
+          <td>Duration <span style={{ fontSize: ".7rem" }}>
+            ({formatDuration(annotatedDuration || 0)} / {formatDuration(totalDuration || 0)})
+          </span>
+          </td>
           <td>{`File Size (${bytes.format(totalSize || 0)})`}</td>
-          <td>{`Segments (${totalSegments})`}</td>
+          <td>{`Segments (${annotatedSegments} / ${totalSegments})`}</td>
           <td>Actions</td>
         </tr>
       </thead>
@@ -77,15 +83,15 @@ export const TitlesTable = ({
               <tr key={title.id}>
                 <td>
                   {/* <a href={`/titles?projectId=${title.projectId}`}> */}
-                  {title.projectName}
+                  {title.project.name}
                   {/* </a> */}
                 </td>
                 <td>
                   <Link to={`/titles/${title.id}`}>{title.sourceFilename}</Link>
                 </td>
-                <td>{formatDuration(title.sourceDuration || 0)}</td>
+                <td>{formatDuration(sum(getAnnotatedDutation(title) || [0]))} / {formatDuration(title.sourceDuration || 0)}</td>
                 <td>{bytes.format(title.sourceFileSize || 0)}</td>
-                <td>{title.segments || 0}</td>
+                <td>{` ${title.segments?.filter(a => a.annotation).length || 0} / ${title.segments?.length || 0}`}</td>
                 <td>
                   <i
                     className="bi bi-scissors px-2 text-primary fs-4 segment"
