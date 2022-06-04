@@ -1,4 +1,3 @@
-import { Header } from "../components";
 import { TitlesPage } from "./titles";
 import { ProjectPage } from "./projects";
 import { BrowserRouter, Routes, Route } from "react-router-dom";

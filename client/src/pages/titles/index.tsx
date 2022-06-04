@@ -27,14 +27,14 @@ export const TitlesPage = () => {
     let postData = {
       projectId: title.projectId,
       sourceId: title.id,
-      projectName: title.projectName,
+      projectName: title.project.name,
       sourceFilename: title.sourceFilename,
       sourceFilePath: title.sourceFilePath,
     };
     post(silenceSegmentsUrl, postData).then((data) => {
       setTitles((prev) => [
         ...prev.filter((t) => t.id !== title.id),
-        { ...data, projectName: title.projectName },
+        { ...data, projectName: title.project.name },
       ]);
       toggelSpinner();
     });

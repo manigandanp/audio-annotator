@@ -19,17 +19,14 @@ import * as lodash from 'lodash';
 
 @Controller('api/segments')
 export class SegmentController {
-  constructor(private readonly segmentService: SegmentService) {}
+  constructor(private readonly segmentService: SegmentService) { }
 
   @Post('silence')
   async silence(@Body() silenceDto: SilenceSegmenterClientDto) {
     let updatedTitle = await this.segmentService.createSilenceSegments(
       silenceDto,
     );
-    return {
-      ...lodash.omit(updatedTitle, ['_count']),
-      segments: updatedTitle._count.segments,
-    };
+    return updatedTitle
   }
 
   @Post('samples')

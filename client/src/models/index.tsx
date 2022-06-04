@@ -1,15 +1,15 @@
 export interface Title {
   id: string;
-  projectName: string;
   projectId: string;
   sourceFilename: string;
   sourceFilePath: string;
   sourceFileSize?: number;
   sampleRate?: number;
   sourceDuration?: number;
-  segments?: number;
   createdAt?: string;
   updatedAt?: string;
+  project: Project;
+  segments: Segment[];
 }
 
 export interface Project {
