@@ -43,7 +43,7 @@ BigInt.prototype['toJSON'] = function () {
 
 @Controller('api/titles')
 export class TitleController {
-  constructor(private readonly titleService: TitleService) {}
+  constructor(private readonly titleService: TitleService) { }
 
   @UseInterceptors(FileInterceptor('file', storageOptions))
   @Post()
@@ -81,18 +81,8 @@ export class TitleController {
   }
 
   @Get()
-  async findAll() {
-    let titlesWithProject = await this.titleService.findAll();
-    return titlesWithProject.map((t) => {
-      return {
-        ...lodash.omit(t, ['project', '_count']),
-        ...{
-          projectId: t.project.id,
-          projectName: t.project.name,
-          segments: t._count.segments,
-        },
-      };
-    });
+  findAll() {
+    return this.titleService.findAll();
   }
 
   @Get('download/:id')
