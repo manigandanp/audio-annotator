@@ -22,7 +22,6 @@ import {
   DoublyLinkedListNode,
 } from "@datastructures-js/linked-list";
 
-
 export const TitlePage = () => {
   const { titleId } = useParams();
   const [showSpinner, setShowSpinner] = useState<boolean>(true);
@@ -35,50 +34,56 @@ export const TitlePage = () => {
   const [refTranscription, setRefTranscription] = useState<string>();
 
   useEffect(() => {
-    get(`${titlesUrl}/${titleId}`).then(
-      (titlesWithSegments: Title) => {
-        let segments = titlesWithSegments.segments;
-        let regionParams: RegionParams[] = segments.map((s) =>
-          toRegionParams(s, titlesWithSegments)
+    get(`${titlesUrl}/${titleId}`).then((titlesWithSegments: Title) => {
+      let segments = titlesWithSegments.segments;
+      let regionParams: RegionParams[] = segments.map((s) =>
+        toRegionParams(s, titlesWithSegments),
+      );
+
+      let wavesurfer = createWaveSurfer(regionParams);
+      wavesurfer.zoom(75);
+      wavesurfer.on("ready", () => {
+        setShowSpinner(false);
+        let sortedRegions = lodash.sortBy(
+          lodash.values(wavesurfer.regions.list),
+          (d) => parseInt(d.data.endSample as string),
         );
 
-        let wavesurfer = createWaveSurfer(regionParams);
-        wavesurfer.zoom(75);
-        wavesurfer.on("ready", () => {
-          setShowSpinner(false);
-          let sortedRegions = lodash.sortBy(
-            lodash.values(wavesurfer.regions.list),
-            (d) => parseInt(d.data.endSample as string)
-          );
+        let regionsList = DoublyLinkedList.fromArray(sortedRegions);
+        let lastAnnotatedRegionIdx = sortedRegions
+          .map((a) => a.data.annotation)
+          .indexOf(undefined);
+        let firstRegion =
+          lastAnnotatedRegionIdx == -1
+            ? regionsList.head()
+            : findRegionFromList(
+                sortedRegions[lastAnnotatedRegionIdx],
+                regionsList,
+              );
+        setRegions(regionsList);
+        currentRegionHandler(firstRegion);
+        setWavesurfer(wavesurfer);
+        if (titleId) {
+          setRefTranscription(setInitialTranscription(titleId, firstRegion));
+        }
 
-          let regionsList = DoublyLinkedList.fromArray(sortedRegions);
-          let lastAnnotatedRegionIdx = sortedRegions.map(a => a.data.annotation).indexOf(undefined)
-          let firstRegion = lastAnnotatedRegionIdx == -1 ? regionsList.head() : findRegionFromList(sortedRegions[lastAnnotatedRegionIdx], regionsList);
-          setRegions(regionsList);
-          currentRegionHandler(firstRegion);
-          setWavesurfer(wavesurfer);
-          if (titleId) {
-            setRefTranscription(setInitialTranscription(titleId, firstRegion));
-          }
+        wavesurfer.on("region-click", (r, e) =>
+          regionClickHandler(r, e, regionsList, wavesurfer),
+        );
 
-          wavesurfer.on("region-click", (r, e) =>
-            regionClickHandler(r, e, regionsList, wavesurfer)
-          );
-
-          wavesurfer.on("region-update-end", (region: Region, action) => {
-            currentRegionHandler(findRegionFromList(region, regionsList));
-            resizingSegment(region);
-          });
+        wavesurfer.on("region-update-end", (region: Region, action) => {
+          currentRegionHandler(findRegionFromList(region, regionsList));
+          resizingSegment(region);
         });
+      });
 
-        loadAudio(wavesurfer, titlesWithSegments);
-      }
-    );
+      loadAudio(wavesurfer, titlesWithSegments);
+    });
   }, []);
 
   const setInitialTranscription = (
     titleId: string,
-    region: DoublyLinkedListNode<Region>
+    region: DoublyLinkedListNode<Region>,
   ) => {
     let trans =
       localStorage.getItem(titleId) ||
@@ -107,7 +112,7 @@ export const TitlePage = () => {
 
   const currentRegionHandler = (
     regionNode: DoublyLinkedListNode<Region> | undefined,
-    shouldPlay: boolean = false
+    shouldPlay: boolean = false,
   ) => {
     if (regionNode) {
       let region = regionNode.getValue();
@@ -127,19 +132,19 @@ export const TitlePage = () => {
 
   const trimLeftSilence = () => {
     if (currentRegion) {
-      let c: Region = currentRegion?.getValue()
-      c.update({ start: c.start + 0.03 })
-      resizingSegment(c)
+      let c: Region = currentRegion?.getValue();
+      c.update({ start: c.start + 0.03 });
+      resizingSegment(c);
     } else console.log("No Segments to left trim");
-  }
+  };
 
   const trimRightSilence = () => {
     if (currentRegion) {
-      let c: Region = currentRegion?.getValue()
-      c.update({ end: c.end - 0.03 })
-      resizingSegment(c)
+      let c: Region = currentRegion?.getValue();
+      c.update({ end: c.end - 0.03 });
+      resizingSegment(c);
     } else console.log("No Segments to left trim");
-  }
+  };
 
   const samplesToTime = (sample: number, sampleRate: number) =>
     sample / sampleRate;
@@ -147,7 +152,7 @@ export const TitlePage = () => {
   const timeToSample = (
     time: number,
     sampleRate: number,
-    floor: boolean = false
+    floor: boolean = false,
   ) => {
     if (floor) return Math.floor(time * sampleRate);
     return Math.ceil(time * sampleRate);
@@ -175,14 +180,14 @@ export const TitlePage = () => {
 
   const findRegionFromList = (
     region: Region,
-    regions: DoublyLinkedList<Region>
+    regions: DoublyLinkedList<Region>,
   ) => regions?.find((n) => n.getValue().id === region.id);
 
   const regionClickHandler = (
     region: Region,
     e: Event,
     regions: DoublyLinkedList<Region>,
-    wavesurfer: Wavesurfer
+    wavesurfer: Wavesurfer,
   ) => {
     // e.stopPropagation(); // uncomment to play region from beginning when clicking it.
     currentRegionHandler(findRegionFromList(region, regions));
@@ -217,7 +222,7 @@ export const TitlePage = () => {
       let nextRegion = currentRegion.getNext();
       remove(
         `${segmentsUrl}?segmentFilePath=${currentRegionData?.data.fileAbsolutePath}`,
-        {}
+        {},
       ).then((data) => {
         setShowSpinner(false);
         regions?.remove(currentRegion); // remove from list
@@ -292,7 +297,7 @@ export const TitlePage = () => {
   };
 
   const saveAnnotationHandler = (
-    currentRegion: DoublyLinkedListNode<Region>
+    currentRegion: DoublyLinkedListNode<Region>,
   ) => {
     let currentRegionData = currentRegion.getValue();
     let updatedAnnotation = {
@@ -315,7 +320,7 @@ export const TitlePage = () => {
   };
 
   const refTranscriptionHandler = (
-    e: React.ChangeEvent<HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLTextAreaElement>,
   ) => {
     let val = cleanTranscription(e.target?.value);
     let titleId = currentRegion?.getValue().data.titleId as string;
@@ -346,7 +351,7 @@ export const TitlePage = () => {
       endSample: newEndSample,
       duration: newDuration,
     });
-  }
+  };
 
   return (
     <>
@@ -360,8 +365,8 @@ export const TitlePage = () => {
               {currentRegion?.getValue().data.projectName as string} -{" "}
               {lodash.last(
                 (currentRegion?.getValue().data.sourceFilePath as string).split(
-                  "/"
-                )
+                  "/",
+                ),
               )}
             </h4>
           </div>
@@ -423,7 +428,5 @@ export const TitlePage = () => {
   );
 };
 
-const loadAudio = (
-  wavesurfer: Wavesurfer,
-  titlesWithSegments: Title
-) => wavesurfer.load(`${audioUrl}?path=${titlesWithSegments.sourceFilePath}`);
+const loadAudio = (wavesurfer: Wavesurfer, titlesWithSegments: Title) =>
+  wavesurfer.load(`${audioUrl}?path=${titlesWithSegments.sourceFilePath}`);
