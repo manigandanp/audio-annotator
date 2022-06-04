@@ -52,7 +52,8 @@ export const TitlePage = () => {
           );
 
           let regionsList = DoublyLinkedList.fromArray(sortedRegions);
-          let firstRegion = regionsList.head();
+          let lastAnnotatedRegionIdx = sortedRegions.map(a => a.data.annotation).indexOf(undefined)
+          let firstRegion = lastAnnotatedRegionIdx == -1 ? regionsList.head() : findRegionFromList(sortedRegions[lastAnnotatedRegionIdx], regionsList);
           setRegions(regionsList);
           currentRegionHandler(firstRegion);
           setWavesurfer(wavesurfer);
@@ -87,8 +88,8 @@ export const TitlePage = () => {
 
   const toRegionParams = (s: Segment, data: Title) => ({
     id: s.id,
-    start: samplesToTime(s.startSample, data.sampleRate||0),
-    end: samplesToTime(s.endSample, data.sampleRate||0),
+    start: samplesToTime(s.startSample, data.sampleRate || 0),
+    end: samplesToTime(s.endSample, data.sampleRate || 0),
     loop: false,
     data: {
       ...lodash.omit(s, ["annotation"]),
