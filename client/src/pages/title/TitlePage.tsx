@@ -11,7 +11,7 @@ import {
   segmentsUrl,
   annotationsUrl,
 } from "../../config";
-import { Segment, TitleWithSegment, ResizedSegment } from "../../models";
+import { Segment, Title, ResizedSegment } from "../../models";
 import { get, post, remove } from "../../requests";
 import { Region, RegionParams } from "wavesurfer.js/src/plugin/regions";
 import Wavesurfer from "wavesurfer.js";
@@ -21,7 +21,7 @@ import {
   DoublyLinkedList,
   DoublyLinkedListNode,
 } from "@datastructures-js/linked-list";
-import { start } from "repl";
+
 
 export const TitlePage = () => {
   const { titleId } = useParams();
@@ -36,7 +36,7 @@ export const TitlePage = () => {
 
   useEffect(() => {
     get(`${titlesUrl}/${titleId}`).then(
-      (titlesWithSegments: TitleWithSegment) => {
+      (titlesWithSegments: Title) => {
         let segments = titlesWithSegments.segments;
         let regionParams: RegionParams[] = segments.map((s) =>
           toRegionParams(s, titlesWithSegments)
@@ -85,15 +85,15 @@ export const TitlePage = () => {
     return cleanTranscription(trans);
   };
 
-  const toRegionParams = (s: Segment, data: TitleWithSegment) => ({
+  const toRegionParams = (s: Segment, data: Title) => ({
     id: s.id,
-    start: samplesToTime(s.startSample, data.sampleRate),
-    end: samplesToTime(s.endSample, data.sampleRate),
+    start: samplesToTime(s.startSample, data.sampleRate||0),
+    end: samplesToTime(s.endSample, data.sampleRate||0),
     loop: false,
     data: {
       ...lodash.omit(s, ["annotation"]),
       projectId: data.projectId,
-      projectName: data.projectName,
+      projectName: data.project.name,
       sourceFilePath: data.sourceFilePath,
       sampleRate: data.sampleRate,
       annotation: s.annotation?.annotation,
@@ -424,5 +424,5 @@ export const TitlePage = () => {
 
 const loadAudio = (
   wavesurfer: Wavesurfer,
-  titlesWithSegments: TitleWithSegment
+  titlesWithSegments: Title
 ) => wavesurfer.load(`${audioUrl}?path=${titlesWithSegments.sourceFilePath}`);

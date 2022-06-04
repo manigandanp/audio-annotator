@@ -72,12 +72,8 @@ export class TitleController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string) {
-    let titlesWithSegments = await this.titleService.findOne(id);
-    return {
-      ...lodash.omit(titlesWithSegments, ['project']),
-      projectName: titlesWithSegments.project.name,
-    };
+  findOne(@Param('id') id: string) {
+    return this.titleService.findOne(id);
   }
 
   @Get()
