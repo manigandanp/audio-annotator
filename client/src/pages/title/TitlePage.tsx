@@ -199,8 +199,8 @@ export const TitlePage = () => {
   };
 
   const regionResizeHandler = () => {
-    setShowSpinner(true);
     if (resizedData) {
+      setShowSpinner(true);
       post(sampleSegmentsUrl, resizedData).then((data) => {
         setShowSpinner(false);
         let currentRegionData = currentRegion?.getValue();
@@ -350,6 +350,7 @@ export const TitlePage = () => {
       startSample: newStartSample,
       endSample: newEndSample,
       duration: newDuration,
+      trimThreshold: 0,
     });
   };
 
@@ -422,7 +423,6 @@ export const TitlePage = () => {
         ) : (
           <></>
         )}
-        {/* <SegmentsTable segments={segments} /> */}
       </div>
     </>
   );

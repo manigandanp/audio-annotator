@@ -21,4 +21,5 @@ export interface SamplesSegmenterClientDto extends SegmenterClientDto {
   titleId: string;
   duration?: number;
   sourceFilePath: string;
+  trimThreshold?: number
 }

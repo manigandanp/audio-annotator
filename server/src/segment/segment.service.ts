@@ -22,7 +22,7 @@ export class SegmentService {
     private segmenterClient: SegmenterClientService,
     private db: DatabaseService,
     private titleService: TitleService,
-  ) {}
+  ) { }
 
   private formatSegments(response: any, dto: SegmenterClientDto) {
     return response.segments
@@ -64,7 +64,7 @@ export class SegmentService {
     let samplesSegmenterObj = {
       project: dto.projectName,
       source_file_path: dto.sourceFilePath,
-      trim_threshold: dto.trimThreshold || config.trimThreshold,
+      trim_threshold: dto.trimThreshold,
       start_sample: dto.startSample,
       end_sample: dto.endSample,
     } as SampleSegmenterRequestDto;
