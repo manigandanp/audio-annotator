@@ -5,7 +5,7 @@ import { UpdateAnnotationDto } from './dto/update-annotation.dto';
 
 @Injectable()
 export class AnnotationService {
-  constructor(private db: DatabaseService) {}
+  constructor(private db: DatabaseService) { }
 
   create(dto: Prisma.AnnotationUncheckedCreateInput) {
     return this.db.annotation.upsert({
@@ -23,8 +23,8 @@ export class AnnotationService {
     return `This action returns a #${id} annotation`;
   }
 
-  update(id: number, updateAnnotationDto: UpdateAnnotationDto) {
-    return `This action updates a #${id} annotation`;
+  update(id: Prisma.AnnotationWhereUniqueInput, updateAnnotationDto: UpdateAnnotationDto) {
+    return this.db.annotation.update({ where: id, data: updateAnnotationDto })
   }
 
   remove(id: number) {
