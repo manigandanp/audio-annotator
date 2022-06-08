@@ -20,11 +20,13 @@ export const ValidationPage = () => {
     
   }, []);
 
+  const updateSpinnerStatus = (show: boolean) => setShowSpinner(show)
+
   return (
     <>
       <Header isButtonEnabled={false} />
       <SpinnerIcon showSpinner={showSpinner} />
-      {title ? <ValidationTable title={title} /> : <></>}
+      {title ? <ValidationTable title={title} updateSpinner={updateSpinnerStatus} /> : <></>}
     </>
   );
 };

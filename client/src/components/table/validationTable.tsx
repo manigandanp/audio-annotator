@@ -1,20 +1,21 @@
 import { Annotation, Segment, Title } from "../../models";
-import { annotationsUrl, audioUrl } from "../../config";
+import {
+  annotationsUrl,
+  audioUrl,
+  sampleSegmentsUrl,
+  segmentsUrl,
+} from "../../config";
 import { useEffect, useState } from "react";
 import { formatDuration } from "../../utils";
 import * as _ from "lodash";
-import { update } from "../../requests";
+import { update, remove, post } from "../../requests";
 
 type Props = {
   title: Title;
+  updateSpinner: (a: boolean) => void;
 };
 
-// Edit - partially implemented
-// Resample
-// Delete
-// Invalid
-
-export const ValidationTable = ({ title }: Props) => {
+export const ValidationTable = ({ title, updateSpinner }: Props) => {
   const [pageNo, setPageNo] = useState<number>(0);
   const [editRow, setEditRow] = useState<string>();
   const [currentAnnotation, setCurrentAnnotation] = useState<string>();
@@ -53,6 +54,7 @@ export const ValidationTable = ({ title }: Props) => {
 
   const updateAnnotation = (segment: Segment) => {
     if (segment.annotation?.annotation !== currentAnnotation) {
+      updateSpinner(true);
       update(`${annotationsUrl}/${segment.annotation?.id}`, {
         annotation: currentAnnotation,
         segmentId: segment.id,
@@ -63,10 +65,41 @@ export const ValidationTable = ({ title }: Props) => {
             { ...segment, annotation: data },
           ]),
         );
+        updateSpinner(false);
         setEditRow("");
       });
     } else setEditRow("");
   };
+
+  const deleteSegment = async (segment: Segment) => {
+    const segmentsApi = `${segmentsUrl}?segmentFilePath=${segment.fileAbsolutePath}`;
+    return await remove(segmentsApi, {}).then((data) =>
+      removeSegment(data, segments),
+    );
+  };
+
+  const deleteSegmentHandler = (segment: Segment) => {
+    updateSpinner(true);
+    deleteSegment(segment).then((data) => {
+      setSegments(sortSegments(data));
+      updateSpinner(false);
+    });
+  };
+
+  const removeSegment = (segment: Segment, segments: Segment[]) => {
+    _.remove(segments, (s) => s.id === segment.id);
+    return segments;
+  };
+
+  // const resizeSegmentHandler = (segment: Segment) => {
+  //   updateSpinner(true);
+  //   deleteSegment(segment).then((filteredSegments) => {
+  //     post(sampleSegmentsUrl, segment).then((newResizedSegment) => {
+  //       setSegments(sortSegments([...filteredSegments, {...newResizedSegment}]));
+  //       updateSpinner(false);
+  //     });
+  //   });
+  // };
 
   return (
     <div className="container">
@@ -114,17 +147,12 @@ export const ValidationTable = ({ title }: Props) => {
                   ></i>
                   <i
                     className="bi bi-trash px-2 text-danger fs-5 delete"
-                    onClick={() => console.log(segment)}
+                    onClick={() => deleteSegmentHandler(segment)}
                   ></i>
-                  <i
+                  {/* <i
                     className="bi bi-arrows-expand px-2 text-primary fs-5 resize"
-                    style={{
-                      transform: "rotate(90deg) !important",
-                      WebkitTransform: "rotate(90deg)",
-                      msTransform: "rotate(90deg)",
-                    }}
-                    onClick={() => console.log(segment)}
-                  ></i>
+                    onClick={() => resizeSegmentHandler(segment)}
+                  ></i> */}
                 </td>
                 {/* <td>
                   <input type="checkbox" name="isValid" id="isValid" />
