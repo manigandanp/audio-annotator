@@ -22,3 +22,10 @@ body {
 .playing-region {
   background-color: rgba(65, 235, 31, 0.386) !important;
 }
+
+.bi.bi-arrows-expand.resize::before {
+  transform: rotate(90deg);
+  -webkit-transform: rotate(90deg);
+  -moz-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+}

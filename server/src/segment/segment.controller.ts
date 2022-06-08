@@ -15,7 +15,6 @@ import {
 } from './dto/create-segment.dto';
 import * as fsExtra from 'fs-extra';
 import * as fs from 'fs';
-import * as lodash from 'lodash';
 
 @Controller('api/segments')
 export class SegmentController {

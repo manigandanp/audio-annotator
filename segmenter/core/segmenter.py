@@ -53,7 +53,7 @@ class SamplesSegmenter(Segmenter):
     left_channel, sample_rate = super().load_audio(source)
     segments_with_start_end_samples = np.array([[start_sample, end_sample]])
     segmented_signals = super().samples_to_segments(left_channel, segments_with_start_end_samples)
-    trimed_segments = super().trim_signals(segmented_signals, trim_threshold_in_db)
+    trimed_segments = super().trim_signals(segmented_signals, trim_threshold_in_db) if trim_threshold_in_db > 0 else segmented_signals
     return {
         'source': source,
         'source_shape': left_channel.shape, 

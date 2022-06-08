@@ -8,6 +8,7 @@ export interface Title {
   sourceDuration?: number;
   createdAt?: string;
   updatedAt?: string;
+  refTranscription?: string;
   project: Project;
   segments: Segment[];
 }
@@ -39,21 +40,6 @@ export interface Segment {
   fileAbsolutePath: string;
   titleId: string;
   annotation?: Annotation;
-}
-
-export interface TitleWithSegment {
-  id: string;
-  createdAt?: string;
-  updatedAt?: string;
-  sourceFilename: string;
-  sourceFilePath: string;
-  sourceFileSize: number;
-  sampleRate: number;
-  sourceDuration: number;
-  projectId: string;
-  projectName: string;
-  refTranscription?: string;
-  segments: Segment[];
 }
 
 export interface ResizedSegment {

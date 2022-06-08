@@ -14,7 +14,7 @@ import { UpdateAnnotationDto } from './dto/update-annotation.dto';
 
 @Controller('api/annotations')
 export class AnnotationController {
-  constructor(private readonly annotationService: AnnotationService) {}
+  constructor(private readonly annotationService: AnnotationService) { }
 
   @Post()
   create(@Body() createAnnotationDto: CreateAnnotationDto) {
@@ -36,7 +36,7 @@ export class AnnotationController {
     @Param('id') id: string,
     @Body() updateAnnotationDto: UpdateAnnotationDto,
   ) {
-    return this.annotationService.update(+id, updateAnnotationDto);
+    return this.annotationService.update({ id }, updateAnnotationDto);
   }
 
   @Delete(':id')
