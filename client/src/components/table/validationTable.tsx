@@ -2,13 +2,13 @@ import { Annotation, Segment, Title } from "../../models";
 import {
   annotationsUrl,
   audioUrl,
-  sampleSegmentsUrl,
   segmentsUrl,
 } from "../../config";
 import { useEffect, useState } from "react";
 import { formatDuration } from "../../utils";
 import * as _ from "lodash";
-import { update, remove, post } from "../../requests";
+import { update, remove } from "../../requests";
+import { Pagination } from "../../components/nav/pagination";
 
 type Props = {
   title: Title;
@@ -32,18 +32,6 @@ export const ValidationTable = ({ title, updateSpinner }: Props) => {
     setSegments(sortSegments(title.segments));
   }, []);
 
-  const toNavItems = (i: number, pageNo: number): JSX.Element => (
-    <li className={`page-item ${i == pageNo ? "active" : ""}`} key={i}>
-      <a
-        className="page-link"
-        onClick={() => {
-          setPageNo(i);
-        }}
-      >
-        {i + 1}
-      </a>
-    </li>
-  );
 
   const editAnnotationHandler = (segment: Segment) => {
     if (segment.id) {
@@ -162,11 +150,14 @@ export const ValidationTable = ({ title, updateSpinner }: Props) => {
           })}
         </tbody>
       </table>
-      <nav aria-label="Page navigation example">
-        <ul className="pagination justify-content-center">
-          {pageNos.map((p, i) => toNavItems(i, pageNo))}
-        </ul>
-      </nav>
+
+      <Pagination
+        pageNos={pageNos}
+        currentPageNo={pageNo}
+        setPageHandler={(i) => {
+          setPageNo(i);
+        }}
+      />
     </div>
   );
 };
