@@ -2,6 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { DatabaseService } from '../database/database.service';
 import { UpdateTitleDto } from './dto/update-title.dto';
+import * as fs from 'fs'
+import * as fsExtra from 'fs-extra'
+import * as path from 'path';
 
 @Injectable()
 export class TitleService {
@@ -40,8 +43,26 @@ export class TitleService {
   }
 
   remove(sourceFilePath: string) {
+    if (fs.existsSync(sourceFilePath)) fsExtra.removeSync(path.parse(sourceFilePath).dir)
     return this.db.title.delete({
       where: { sourceFilePath: sourceFilePath },
     });
+  }
+
+  async clean(id: string) {
+    const title = await this.findOne(id)
+    const validSegmentPath = title.segments.map(s => s.filename)
+    const titlePath = title.sourceFilePath.replace(title.sourceFilename, '')
+    const wavsPath = path.resolve(titlePath, 'wavs')
+    fs.readdir(wavsPath, (e, files) => {
+      files.forEach(file => {
+        if (!validSegmentPath.includes(file)) {
+          const fileToRemove = path.resolve(wavsPath, file)
+          fsExtra.removeSync(fileToRemove)
+        }
+      })
+      return { err: e }
+    })
+    return { msg: "Successfully deleted" }
   }
 }
