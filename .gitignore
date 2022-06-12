@@ -47,3 +47,5 @@ coverage
 .env
 
 /data
+
+clean-wavs.py
