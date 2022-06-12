@@ -21,7 +21,6 @@ import { baseDir, uploadsDir } from 'config';
 import { Prisma } from '@prisma/client';
 import * as fsExtra from 'fs-extra';
 import * as fs from 'fs';
-import * as lodash from 'lodash';
 import * as path from 'path';
 import * as archiver from 'archiver';
 
@@ -117,9 +116,14 @@ export class TitleController {
     return this.titleService.update(id, updateTitleDto);
   }
 
+  @Delete('/clean/:id')
+  clean(@Param('id') id: string) {
+    return this.titleService.clean(id)
+  }
+
   @Delete()
   remove(@Query('sourceFilePath') sourceFilePath: string) {
-    if (fs.existsSync(sourceFilePath)) fsExtra.removeSync(sourceFilePath);
     return this.titleService.remove(sourceFilePath);
   }
+
 }
