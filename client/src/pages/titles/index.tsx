@@ -13,7 +13,7 @@ export const TitlesPage = () => {
         setTitles((prev) => prev.filter((t) => t.id !== title.id));
         toggelSpinner();
         setDeleteTitleModal(false);
-      }
+      },
     );
   };
 
@@ -47,6 +47,13 @@ export const TitlesPage = () => {
     });
   };
 
+  const cleanTitleHandler = (title: Title) => {
+    toggelSpinner();
+    remove(`${titlesUrl}/clean/${title.id}`, {}).then((d) => {
+      toggelSpinner();
+    });
+  };
+
   const modalAddSourceShowHandler = () => {
     setShowAddSourceModal(true);
   };
@@ -58,7 +65,7 @@ export const TitlesPage = () => {
   const addSourceHandler = (
     selectedFile: File,
     selectedProject: Option,
-    transcription: string
+    transcription: string,
   ) => {
     const formData = new FormData();
     formData.append("projectName", selectedProject.label);
@@ -122,6 +129,7 @@ export const TitlesPage = () => {
           segmentTitleHandler={segmentTitleHandler}
           deleteTitleHandler={deleteIconClickHandler}
           downloadTitleHandler={downloadTitleHandler}
+          cleanTitleHandler={cleanTitleHandler}
         />
       </div>
     </>
