@@ -1,8 +1,11 @@
-import { Project } from "../../models";
+import { ProjectSummary } from "../../models";
 import dateformat from "dateformat";
+import { formatDuration } from "../../utils";
+import bytes from "bytes";
+import { Link } from "react-router-dom";
 
 type Props = {
-  projects: Project[];
+  projects: ProjectSummary[];
   deleteProjectHandler: Function;
 };
 
@@ -14,21 +17,38 @@ export const ProjectTable = ({ deleteProjectHandler, projects }: Props) => {
           <tr>
             <td>Project</td>
             <td>Titles</td>
+            <td>Duration</td>
+            <td>Annotated</td>
+            <td>Filesize</td>
             <td>Created On</td>
             <td>Actions</td>
           </tr>
         </thead>
         <tbody>
-          {projects.map((project) => {
+          {projects.map((p) => {
             return (
-              <tr>
-                <td>{project.name}</td>
-                <td>{project.titles}</td>
-                <td>{dateformat(project.createdAt, "dd/mm/yyyy")}</td>
+              <tr key={p.project.id}>
+                <td>
+                  <Link
+                    className="nav-link "
+                    to={`\projects\\${p.project.id}?size=15&offset=0`}
+                  >
+                    {p.project.name}
+                  </Link>
+                </td>
+                <td>{p.titlesCount}</td>
+                <td>{`${formatDuration(
+                  p.segmentAnnotatedDuration,
+                )} / ${formatDuration(p.segemntsTotalDuration || 0)}`}</td>
+                <td>{`${p.segmentsAnnotatedCount || 0} / ${
+                  p.segmentsTotalCount || 0
+                }`}</td>
+                <td>{bytes.format(p.segmentsTotalFileSize || 0)}</td>
+                <td>{dateformat(p.project.createdAt, "dd/mm/yyyy")}</td>
                 <td>
                   <i
                     className="bi bi-trash px-2 text-danger fs-5 delete"
-                    onClick={() => deleteProjectHandler(project)}
+                    onClick={() => deleteProjectHandler(p.project)}
                   ></i>
                 </td>
               </tr>

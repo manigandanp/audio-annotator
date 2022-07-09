@@ -14,12 +14,12 @@ export const Header = ({ isButtonEnabled, modalShowHandler }: Props) => {
         </a>
         <ul className="navbar-nav me-auto">
           <li className="nav-item">
-            <Link className="nav-link " to="/">
+            <Link className="nav-link " to="/titles">
               Titles
             </Link>
           </li>
           <li className="nav-item">
-            <Link className="nav-link " to="/projects">
+            <Link className="nav-link " to="/">
               Projects
             </Link>
           </li>

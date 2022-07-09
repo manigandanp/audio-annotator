@@ -11,10 +11,14 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<TitlesPage />} />
-        <Route path="/projects" element={<ProjectPage />} />
+        <Route path="/" element={<ProjectPage />} />
+        <Route path="/projects/:projectId" element={<TitlesPage />} />
+        <Route path="/titles" element={<TitlesPage />} />
         <Route path="/titles/:titleId" element={<TitlePage />} />
-        <Route path="/titles/validation/:titleId" element={<ValidationPage />} />
+        <Route
+          path="/titles/validation/:titleId"
+          element={<ValidationPage />}
+        />
       </Routes>
     </BrowserRouter>
   );

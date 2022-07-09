@@ -106,9 +106,9 @@ export const TitlesTable = ({
               return (
                 <tr key={title.id}>
                   <td>
-                    {/* <a href={`/titles?projectId=${title.projectId}`}> */}
-                    {title.project.name}
-                    {/* </a> */}
+                    <Link to={`/projects/${title.project.id}?size=15&offset=0`}>
+                      {title.project.name}
+                    </Link>
                   </td>
                   <td>
                     <Link to={`/titles/${title.id}`}>

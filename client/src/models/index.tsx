@@ -21,6 +21,16 @@ export interface Project {
   titles?: number;
 }
 
+export interface ProjectSummary {
+  project: Project;
+  titlesCount: number;
+  segemntsTotalDuration: number;
+  segmentAnnotatedDuration: number;
+  segmentsTotalCount: number;
+  segmentsAnnotatedCount: number;
+  segmentsTotalFileSize: number;
+}
+
 export interface Annotation {
   id?: string;
   annotation: string;

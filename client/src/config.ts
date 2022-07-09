@@ -8,6 +8,7 @@ if (process.env.NODE_ENV === 'production') {
 
 export const titlesUrl = `${baseUrl}/api/titles`;
 export const projectsUrl = `${baseUrl}/api/projects`;
+export const projectsSummaryUrl = `${projectsUrl}/summary`
 export const segmentsUrl = `${baseUrl}/api/segments`;
 export const silenceSegmentsUrl = `${segmentsUrl}/silence`;
 export const sampleSegmentsUrl = `${segmentsUrl}/samples`;
