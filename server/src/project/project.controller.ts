@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { ProjectService } from './project.service';
 import { CreateProjectDto } from './dto/create-project.dto';
@@ -14,7 +15,7 @@ import * as lodash from 'lodash';
 
 @Controller('api/projects')
 export class ProjectController {
-  constructor(private readonly projectService: ProjectService) {}
+  constructor(private readonly projectService: ProjectService) { }
 
   @Post()
   create(@Body() createProjectDto: CreateProjectDto) {
@@ -30,9 +31,14 @@ export class ProjectController {
     }));
   }
 
+  @Get('summary')
+  async summary() {
+    return this.projectService.summary()
+  }
+
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.projectService.findOne({ id });
+  findOne(@Param('id') id: string, @Query('size') size: string = '15', @Query('offset') offset: string = '0') {
+    return this.projectService.findOne({ id }, parseInt(size), parseInt(offset));
   }
 
   @Patch(':id')

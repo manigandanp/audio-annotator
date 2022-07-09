@@ -3,7 +3,8 @@ import { AddSourceModal, DeleteModal } from "../../components/modal";
 import { Title, Option } from "../../models";
 import { useEffect, useState } from "react";
 import { get, post, postFormData, remove, download } from "../../requests";
-import { titlesUrl, silenceSegmentsUrl } from "../../config";
+import { titlesUrl, silenceSegmentsUrl, projectsUrl } from "../../config";
+import { useParams, useSearchParams } from "react-router-dom";
 
 export const TitlesPage = () => {
   const deleteTitleHandler = (title: Title) => {
@@ -82,6 +83,13 @@ export const TitlesPage = () => {
     });
   };
 
+  const { projectId } = useParams();
+  const [searchParams, serSearchParams] = useSearchParams();
+  const pageSize = searchParams.get("size") || 15;
+  const pageOffset = searchParams.get("offset") || 0;
+  const fetchUrl = projectId
+    ? `${projectsUrl}/${projectId}?size=${pageSize}&offset=${pageOffset}`
+    : titlesUrl;
   const [titles, setTitles] = useState([] as Title[]);
   const [showAddSourceModal, setShowAddSourceModal] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -91,8 +99,8 @@ export const TitlesPage = () => {
 
   useEffect(() => {
     toggelSpinner();
-    get(titlesUrl).then((data) => {
-      setTitles(data as Title[]);
+    get(fetchUrl).then((data) => {
+      setTitles((data.titles || data) as Title[]);
       toggelSpinner();
     });
   }, []);
