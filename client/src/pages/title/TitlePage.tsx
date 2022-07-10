@@ -41,7 +41,7 @@ export const TitlePage = () => {
       );
 
       let wavesurfer = createWaveSurfer(regionParams);
-      wavesurfer.zoom(75);
+      wavesurfer.zoom(100);
       wavesurfer.on("ready", () => {
         setShowSpinner(false);
         let sortedRegions = lodash.sortBy(
@@ -95,6 +95,7 @@ export const TitlePage = () => {
     id: s.id,
     start: samplesToTime(s.startSample, data.sampleRate || 0),
     end: samplesToTime(s.endSample, data.sampleRate || 0),
+    color: "rgba(150, 146, 149, 0.386)",
     loop: false,
     data: {
       ...lodash.omit(s, ["annotation"]),
