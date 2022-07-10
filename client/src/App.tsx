@@ -1,6 +1,7 @@
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "./global.css";
+import "./bootstrap.min.css" // custom styles from bootswatch.com
 import { TitlesPage } from "./pages/titles";
 import { ProjectPage } from "./pages/projects";
 import { TitlePage } from "./pages/title";
