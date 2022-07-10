@@ -6,21 +6,35 @@ body {
   font-family: 'Oswald', sans-serif !important;
 }
 
+/* https://css-tricks.com/almanac/properties/s/scrollbar/ */
+wave::-webkit-scrollbar {
+  width: 1px;
+}
+
+wave::-webkit-scrollbar-thumb {
+  background-color: darkgrey;
+  outline: 1px solid slategrey;
+  border-radius: 5%;
+}
+
+/* --- End of scroll bar */
+
+/* Spinner */
 .overlay {
-  background-color:#EFEFEF;
+  background-color: #EFEFEF;
   position: fixed;
   width: 100%;
   height: 100%;
   z-index: 2000;
   top: 0px;
   left: 0px;
-  opacity: .5; 
-  filter: alpha(opacity=50); 
+  opacity: .5;
+  filter: alpha(opacity=50);
   display: none;
 }
 
 .playing-region {
-  background-color: rgba(65, 235, 31, 0.386) !important;
+  background-color: rgba(18, 230, 156, 0.549) !important;
 }
 
 .bi.bi-arrows-expand.resize::before {
