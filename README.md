@@ -19,7 +19,7 @@
   
   cd server
   npm install
-  npx prisma migraate dev
+  npx prisma migrate dev
   npx prisma generate
   npm run start:dev
   
