@@ -37,8 +37,9 @@ export class SegmentController {
   }
 
   @Get()
-  findAll() {
-    return this.segmentService.findAll();
+  findAll(@Query('titleId') titleId?: string) {
+    console.log("title", titleId)
+    return this.segmentService.findAll(titleId);
   }
 
   @Get(':id')

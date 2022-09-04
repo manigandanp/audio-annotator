@@ -87,8 +87,10 @@ export class SegmentService {
     });
   }
 
-  findAll() {
-    return `This action returns all segment`;
+  findAll(titleId?: string) {
+    console.log(titleId)
+    if (titleId) return this.db.segment.findMany({ where: { titleId: titleId } });
+    else return this.db.segment.findMany();
   }
 
   findOne(id: number) {
