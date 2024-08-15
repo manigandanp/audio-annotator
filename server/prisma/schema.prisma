@@ -55,12 +55,15 @@ model Segment {
 }
 
 model Annotation {
-  id         String   @id @default(uuid())
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  annotation String
-  segmentId  String   @unique
-  segment    Segment  @relation(fields: [segmentId], references: [id], onDelete: Cascade)
+  id                 String   @id @default(uuid())
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  annotation         String
+  cleansedAnnotation String   @default("")
+  emotionalType      String   @default("")
+  isValid            Boolean  @default(true)
+  segmentId          String   @unique
+  segment            Segment  @relation(fields: [segmentId], references: [id], onDelete: Cascade)
 
   @@map("annotations")
 }

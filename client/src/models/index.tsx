@@ -34,6 +34,9 @@ export interface ProjectSummary {
 export interface Annotation {
   id?: string;
   annotation: string;
+  cleansedAnnotation: string;
+  emotionalType: string;
+  isValid: boolean;
   segmentId: string;
   createdAt?: string;
   updatedAt?: string;
