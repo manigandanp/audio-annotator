@@ -3,11 +3,11 @@
 #### ```ஒருவர் சேர்த்துள்ள செல்வங்களிலேயே தலையான செல்வமாக கருதப்படுவது, அவர் தன் செவி வழியாக சேர்த்துள்ள அறிவாகிய செல்வமாகும்.```
 
 <audio controls>
-  <source src="./training/sample.wav" type="audio/mpeg">
+  <source src="./training/sample.wav" type="audio/wav">
   Your browser does not support the audio element.
 </audio>
 
-[Listen to the audio](./training/sample.wav)
+## [Listen to sample audio](./training/sample.wav)
 
 ## Dev inside Container
 
