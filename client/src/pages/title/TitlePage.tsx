@@ -31,6 +31,9 @@ export const TitlePage = () => {
   const [regions, setRegions] = useState<DoublyLinkedList<Region>>();
   const [resizedData, setResizedData] = useState<ResizedSegment>();
   const [annotation, setAnnotation] = useState<string>();
+  const [cleansedAnnotation, setCleansedAnnotation] = useState<string>();
+  const [emotionalType, setEmotionalType] = useState<string>();
+  const [isValid, setIsValid] = useState<boolean>(true);
   const [refTranscription, setRefTranscription] = useState<string>();
 
   useEffect(() => {
@@ -95,7 +98,7 @@ export const TitlePage = () => {
     id: s.id,
     start: samplesToTime(s.startSample, data.sampleRate || 0),
     end: samplesToTime(s.endSample, data.sampleRate || 0),
-    color: "rgba(150, 146, 149, 0.386)",
+    color: "rgba(150, 146, 149, 0.386)", // CHANGE THIS COLOR
     loop: false,
     data: {
       ...lodash.omit(s, ["annotation"]),
@@ -104,6 +107,9 @@ export const TitlePage = () => {
       sourceFilePath: data.sourceFilePath,
       sampleRate: data.sampleRate,
       annotation: s.annotation?.annotation,
+      cleansedAnnotation: s.annotation?.cleansedAnnotation,
+      emotionalType: s.annotation?.emotionalType,
+      isValid: s.annotation?.isValid,
       annotationId: s.annotation?.id,
       refTranscription: data.refTranscription,
     },
@@ -116,8 +122,12 @@ export const TitlePage = () => {
     shouldPlay: boolean = false,
   ) => {
     if (regionNode) {
+      console.log("calling current regoin handler", regionNode, shouldPlay);
       let region = regionNode.getValue();
       setAnnotation(region.data.annotation as string);
+      setCleansedAnnotation(region.data.cleansedAnnotation as string);
+      setEmotionalType(region.data.emotionalType as string);
+      setIsValid(region.data.isValid as boolean);
       if (region.element) addRegionBG(region);
       setCurrentRegion((prev) => {
         if (prev) {
@@ -170,12 +180,14 @@ export const TitlePage = () => {
   };
 
   const nextRegionHandler = () => {
-    if (resizedData) regionResizeHandler();
+    // if (resizedData) regionResizeHandler();
+    // if (currentRegion) saveAnnotationHandler(currentRegion);
     currentRegionHandler(currentRegion?.getNext() || regions?.tail(), true);
   };
 
   const prevRegionHandler = () => {
-    if (resizedData) regionResizeHandler();
+    // if (resizedData) regionResizeHandler();
+    // if (currentRegion) saveAnnotationHandler(currentRegion);
     currentRegionHandler(currentRegion?.getPrev() || regions?.head(), true);
   };
 
@@ -261,15 +273,19 @@ export const TitlePage = () => {
     };
 
     setShowSpinner(true);
+
     post(sampleSegmentsUrl, regionParams.data).then((res) => {
       regionParams = {
         id: res.id,
         start: newRegionStartTime,
         end: newRegionEndTime,
+        color: "rgba(150, 146, 149, 0.386)",
         data: {
           ...res,
           ...sourceData,
           sampleRate: sampleRate,
+          cleansedAnnotation: "",
+          isValid: true,
         },
       };
       let newRegion = wavesurfer?.addRegion(regionParams);
@@ -297,26 +313,68 @@ export const TitlePage = () => {
     setAnnotation(value);
   };
 
+  const updateCleansedAnnotationHandler = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    let value = e.target.value
+      .replace(/\s\s+/, " ")
+      .replace(/[a-zA-Z]+/, "")
+      .trim();
+    setCleansedAnnotation(value);
+  };
+
+  const updateEmotionalTypeHandler = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    let value = e.target.value.replace(/\s\s+/, " ").trim();
+    setEmotionalType(value);
+  };
+
+  const updateIsValidHandler = () => {
+    setIsValid((isValid) => !isValid);
+  };
+
+  const haveUpdates = (currentRegion: Region) => {
+    let changes =
+      (currentRegion.data.annotation &&
+        (currentRegion.data.annotation as string) !== annotation) ||
+      (currentRegion.data.cleansedAnnotation || "") !== cleansedAnnotation ||
+      (currentRegion.data.emotionalType || "") !== emotionalType ||
+      (currentRegion.data.isValid as boolean) !== isValid;
+    return changes;
+  };
+
   const saveAnnotationHandler = (
     currentRegion: DoublyLinkedListNode<Region>,
   ) => {
-    let currentRegionData = currentRegion.getValue();
-    let updatedAnnotation = {
-      annotation: annotation,
-      segmentId: currentRegionData.data.id,
-    };
-    if (resizedData) regionResizeHandler();
-    if (annotation && currentRegionData.data.annotation !== annotation) {
-      setShowSpinner(true);
-      post(annotationsUrl, updatedAnnotation).then((res) => {
-        currentRegionData.update({
-          data: {
-            ...currentRegionData.data,
-            annotation: res.annotation,
-          },
+    if (currentRegion) {
+      let currentRegionData = currentRegion.getValue();
+      let updatedAnnotation = {
+        annotation: annotation,
+        cleansedAnnotation: cleansedAnnotation,
+        emotionalType: emotionalType,
+        isValid: isValid,
+        segmentId: currentRegionData.data.id,
+      };
+      if (resizedData) regionResizeHandler();
+      // if (haveUpdates(currentRegionData)) {
+      if (currentRegionData.data.annotation) {
+        setShowSpinner(true);
+        post(annotationsUrl, updatedAnnotation).then((res) => {
+          currentRegionData.update({
+            data: {
+              ...currentRegionData.data,
+              annotation: res.annotation,
+              cleansedAnnotation: res.cleansedAnnotation,
+              emotionalType: res.emotionalType,
+              isValid: res.isValid,
+            },
+          });
+          setShowSpinner(false);
         });
-        setShowSpinner(false);
-      });
+      }
+    } else {
+      console.log("No Current Region to save...!");
     }
   };
 
@@ -408,7 +466,15 @@ export const TitlePage = () => {
                 currentRegion={currentRegion}
                 resizedData={resizedData}
                 annotation={annotation}
+                cleansedAnnotation={cleansedAnnotation}
+                emotionalType={emotionalType}
+                isValid={isValid}
                 updateAnnotationHandler={updateAnnotationHandler}
+                updateCleansedAnnotationHandler={
+                  updateCleansedAnnotationHandler
+                }
+                updateEmotionalTypeHandler={updateEmotionalTypeHandler}
+                updateIsValidHandler={updateIsValidHandler}
                 saveAnnotationHandler={saveAnnotationHandler}
               />
             </div>
